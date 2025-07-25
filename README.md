@@ -22,4 +22,21 @@
 
 -> Once the stack is created.
 
+<img width="1511" height="784" alt="Screenshot 2025-07-25 at 2 01 20 PM" src="https://github.com/user-attachments/assets/5b50de57-91a4-462d-aa16-79e3638cce5d" />
+
+* EKS cluster creation
+
+-> create a access key
+-> configure aws 
+```
+aws configure
+AWS Access Key ID [****************36G5]: ***********************************
+AWS Secret Access Key [****************Y+eg]: ***********************************
+Default region name [us-east-1]: ap-south-1
+Default output format [json]: 
+```
+
+
+
+
 
