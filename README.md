@@ -105,8 +105,33 @@ ip-10-0-156-199.ap-south-1.compute.internal   Ready    <none>   4m27s   v1.28.15
 ```
 
 
+# Argo CD  Installation
 
+```
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
 
+# ArgoCD CLI Installation
 
+ArgoCD CLI
+```
+VERSION=$(curl --silent "https://api.github.com/repos/argoproj/argo-cd/releases/latest" | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+sudo curl --silent --location -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-linux-amd64
+sudo chmod +x /usr/local/bin/argocd
+```
+
+# Log in to the ArgoCD server. Expose the ArgoCD API server using port forwarding
+```
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
+
+# Steps to Log into the ArgoCD UI
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d > password.txt
+
+* default username is admin
+
+<img width="1507" height="903" alt="Screenshot 2025-07-25 at 3 50 19 PM" src="https://github.com/user-attachments/assets/fa4c1eab-17ce-4772-9488-9a4e799d1ae1" />
 
 
