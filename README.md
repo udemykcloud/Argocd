@@ -36,6 +36,10 @@ Default region name [us-east-1]: ap-south-1
 Default output format [json]: 
 ```
 
+-> create a cluster , after modifing vpc and subnet ID
+
+
+
 
 
 
