@@ -148,3 +148,99 @@ argocd-server   LoadBalancer   172.20.157.188   a7a762123a8d14c71956e975afab7fff
 # Access argocd  UI using loadbalanacer name or External IP from the above output.
 <img width="1511" height="904" alt="Screenshot 2025-07-25 at 4 31 04 PM" src="https://github.com/user-attachments/assets/0b026038-cede-43fd-95af-dd84053d0a3f" />
 
+# Deploy the sample guestbook application on EKS using Argocd
+
+
+* Set Context for argocd
+
+```
+aws eks --region ap-south-1 update-kubeconfig --name argocd
+kubectl config current-context
+
+Updated context arn:aws:eks:ap-south-1:215959898119:cluster/argocd in /Users/ranjiniganeshan/.kube/config
+arn:aws:eks:ap-south-1:215959898119:cluster/argocd
+
+argocd cluster add arn:aws:eks:ap-south-1:215959898119:cluster/argocd
+WARNING: This will create a service account `argocd-manager` on the cluster referenced by context `arn:aws:eks:ap-south-1:215959898119:cluster/argocd` with full cluster level privileges. Do you want to continue [y/N]? y
+INFO[0003] ServiceAccount "argocd-manager" created in namespace "kube-system" 
+INFO[0003] ClusterRole "argocd-manager-role" created    
+INFO[0004] ClusterRoleBinding "argocd-manager-role-binding" created 
+INFO[0004] Created bearer token secret for ServiceAccount "argocd-manager" 
+Cluster 'https://08CFE27D9DF7F8C856685B1B57903353.gr7.ap-south-1.eks.amazonaws.com' added
+
+```
+
+* deploy guestbook application
+
+-> Deploy 
+```
+argocd app create guestbook \                                        
+  --repo https://github.com/argoproj/argocd-example-apps.git \
+  --path guestbook \
+  --dest-server https://08CFE27D9DF7F8C856685B1B57903353.gr7.ap-south-1.eks.amazonaws.com \
+  --dest-namespace default
+application 'guestbook' created
+
+```
+-> Sync the app and verify the deplyment
+```
+argocd app sync guestbook
+TIMESTAMP                  GROUP        KIND   NAMESPACE                  NAME    STATUS    HEALTH        HOOK  MESSAGE
+2025-07-25T16:44:38+05:30            Service     default          guestbook-ui  OutOfSync  Missing              
+2025-07-25T16:44:38+05:30   apps  Deployment     default          guestbook-ui  OutOfSync  Missing              
+2025-07-25T16:44:38+05:30   apps  Deployment     default          guestbook-ui  OutOfSync  Missing              deployment.apps/guestbook-ui created
+2025-07-25T16:44:38+05:30            Service     default          guestbook-ui  OutOfSync  Missing              service/guestbook-ui created
+
+Name:               argocd/guestbook
+Project:            default
+Server:             https://08CFE27D9DF7F8C856685B1B57903353.gr7.ap-south-1.eks.amazonaws.com
+Namespace:          default
+URL:                https://a7a762123a8d14c71956e975afab7fff-2020289002.ap-south-1.elb.amazonaws.com/applications/guestbook
+Source:
+- Repo:             https://github.com/argoproj/argocd-example-apps.git
+  Target:           
+  Path:             guestbook
+SyncWindow:         Sync Allowed
+Sync Policy:        Manual
+Sync Status:        Synced to  (f58c7ed)
+Health Status:      Progressing
+
+Operation:          Sync
+Sync Revision:      f58c7ed8cfe28ad70701c5923fdbd0154388ea9f
+Phase:              Succeeded
+Start:              2025-07-25 16:44:38 +0530 IST
+Finished:           2025-07-25 16:44:38 +0530 IST
+Duration:           0s
+Message:            successfully synced (all tasks run)
+
+GROUP  KIND        NAMESPACE  NAME          STATUS  HEALTH  HOOK  MESSAGE
+       Service     default    guestbook-ui  Synced                service/guestbook-ui created
+apps   Deployment  default    guestbook-ui  Synced                deployment.apps/guestbook-ui created
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % argocd app set guestbook --sync-policy automated --auto-prune --self-heal
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % kubectl get pods,svc -n default
+NAME                                READY   STATUS              RESTARTS   AGE
+pod/guestbook-ui-7bb94b6878-r464v   0/1     ContainerCreating   0          21s
+
+NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+service/guestbook-ui   ClusterIP   172.20.44.87   <none>        80/TCP    21s
+service/kubernetes     ClusterIP   172.20.0.1     <none>        443/TCP   136m
+```
+-> Access the Guestbook Application using port forward
+```
+kubectl port-forward svc/guestbook-ui -n default 8081:80
+Forwarding from 127.0.0.1:8081 -> 80
+Forwarding from [::1]:8081 -> 80
+Handling connection for 8081
+Handling connection for 8081
+
+```
+<img width="1507" height="905" alt="Screenshot 2025-07-25 at 4 49 31 PM" src="https://github.com/user-attachments/assets/cd6e1537-5897-4a70-8e84-98f8e4cca01e" />
+
+# Verify the guestbook deployment in argocd UI
+
+<img width="1507" height="902" alt="Screenshot 2025-07-25 at 4 50 27 PM" src="https://github.com/user-attachments/assets/12d28fb1-a843-4ea4-b9d1-5010f0ce8337" />
+
+
+
+
+
