@@ -243,6 +243,9 @@ Handling connection for 8081
 ## Kustomize 
 ![handwriting_20250725_173334_via_10015_io](https://github.com/user-attachments/assets/5f50c8f5-324e-4171-92a1-0be9ea40db23)
 
+# Hands-On: Deploying kustomize-guestbook on an EKS Cluster
+
+
 
 
 
