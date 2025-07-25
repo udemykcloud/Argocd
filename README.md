@@ -38,6 +38,8 @@ Default output format [json]:
 
 -> create a cluster , after modifing vpc and subnet ID
 
+``` eksctl create cluster -f cluster.yaml ```
+
 
 
 
