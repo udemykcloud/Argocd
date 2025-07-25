@@ -1,0 +1,28 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: argocd
+  region: ap-south-1
+  version: "1.28"
+
+vpc:
+  id: "vpc-0f0b671dd0cb25b84"
+  subnets:
+    public:
+      ap-south-1a:
+        id: subnet-0971f6a6ba08019be
+      ap-south-1b:
+        id: subnet-08c94ae5b8da490b8
+
+nodeGroups:
+  - name: public-ng-1
+    instanceType: t3.medium
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 2
+    subnets:
+      - ap-south-1a
+      - ap-south-1b
+    ssh:
+      allow: true
