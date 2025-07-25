@@ -240,10 +240,17 @@ Handling connection for 8081
 
 <img width="1507" height="902" alt="Screenshot 2025-07-25 at 4 50 27 PM" src="https://github.com/user-attachments/assets/12d28fb1-a843-4ea4-b9d1-5010f0ce8337" />
 
+# cleanup guestbook application
+-> delete the guestbook app from argo cd  console 
+
+
+
 ## Kustomize 
 ![handwriting_20250725_173334_via_10015_io](https://github.com/user-attachments/assets/5f50c8f5-324e-4171-92a1-0be9ea40db23)
 
 # Hands-On: Deploying kustomize-guestbook on an EKS Cluster
+
+  
 
 
 
