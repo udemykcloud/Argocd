@@ -40,6 +40,69 @@ Default output format [json]:
 
 ``` eksctl create cluster -f cluster.yaml ```
 
+Verify if the cluster is created.
+```
+eksctl create cluster -f cluster.yaml
+2025-07-25 14:22:53 [ℹ]  eksctl version 0.167.0
+2025-07-25 14:22:53 [ℹ]  using region ap-south-1
+2025-07-25 14:22:54 [✔]  using existing VPC (vpc-0f0b671dd0cb25b84) and subnets (private:map[] public:map[ap-south-1a:{subnet-0971f6a6ba08019be ap-south-1a 10.0.128.0/20 0 } ap-south-1b:{subnet-08c94ae5b8da490b8 ap-south-1b 10.0.144.0/20 0 }])
+2025-07-25 14:22:54 [!]  custom VPC/subnets will be used; if resulting cluster doesn't function as expected, make sure to review the configuration of VPC/subnets
+2025-07-25 14:22:54 [ℹ]  nodegroup "public-ng-1" will use "ami-0d4e9299753d4aa4b" [AmazonLinux2/1.28]
+2025-07-25 14:22:54 [ℹ]  using SSH public key "/Users/ranjiniganeshan/.ssh/id_rsa.pub" as "eksctl-argocd-nodegroup-public-ng-1-a8:a2:23:d6:4a:16:3d:b9:2d:34:5e:68:b7:3d:d0:a9" 
+2025-07-25 14:22:54 [ℹ]  using Kubernetes version 1.28
+2025-07-25 14:22:54 [ℹ]  creating EKS cluster "argocd" in "ap-south-1" region with un-managed nodes
+2025-07-25 14:22:54 [ℹ]  1 nodegroup (public-ng-1) was included (based on the include/exclude rules)
+2025-07-25 14:22:54 [ℹ]  will create a CloudFormation stack for cluster itself and 1 nodegroup stack(s)
+2025-07-25 14:22:54 [ℹ]  will create a CloudFormation stack for cluster itself and 0 managed nodegroup stack(s)
+2025-07-25 14:22:54 [ℹ]  if you encounter any issues, check CloudFormation console or try 'eksctl utils describe-stacks --region=ap-south-1 --cluster=argocd'
+2025-07-25 14:22:54 [ℹ]  Kubernetes API endpoint access will use default of {publicAccess=true, privateAccess=false} for cluster "argocd" in "ap-south-1"
+2025-07-25 14:22:54 [ℹ]  CloudWatch logging will not be enabled for cluster "argocd" in "ap-south-1"
+2025-07-25 14:22:54 [ℹ]  you can enable it with 'eksctl utils update-cluster-logging --enable-types={SPECIFY-YOUR-LOG-TYPES-HERE (e.g. all)} --region=ap-south-1 --cluster=argocd'
+2025-07-25 14:22:54 [ℹ]  
+2 sequential tasks: { create cluster control plane "argocd", 
+    2 sequential sub-tasks: { 
+        wait for control plane to become ready,
+        create nodegroup "public-ng-1",
+    } 
+}
+2025-07-25 14:22:54 [ℹ]  building cluster stack "eksctl-argocd-cluster"
+2025-07-25 14:22:55 [ℹ]  deploying stack "eksctl-argocd-cluster"
+2025-07-25 14:23:25 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-cluster"
+2025-07-25 14:23:56 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-cluster"
+2025-07-25 14:24:56 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-cluster"
+2025-07-25 14:25:57 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-cluster"
+2025-07-25 14:26:57 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-cluster"
+2025-07-25 14:27:58 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-cluster"
+2025-07-25 14:28:58 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-cluster"
+2025-07-25 14:29:58 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-cluster"
+2025-07-25 14:30:59 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-cluster"
+2025-07-25 14:33:02 [ℹ]  building nodegroup stack "eksctl-argocd-nodegroup-public-ng-1"
+2025-07-25 14:33:02 [!]  subnets contain a mix of both local and availability zones
+2025-07-25 14:33:02 [!]  subnets contain a mix of both local and availability zones
+2025-07-25 14:33:03 [ℹ]  deploying stack "eksctl-argocd-nodegroup-public-ng-1"
+2025-07-25 14:33:03 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-nodegroup-public-ng-1"
+2025-07-25 14:33:33 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-nodegroup-public-ng-1"
+2025-07-25 14:34:28 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-nodegroup-public-ng-1"
+2025-07-25 14:36:23 [ℹ]  waiting for CloudFormation stack "eksctl-argocd-nodegroup-public-ng-1"
+2025-07-25 14:36:23 [ℹ]  waiting for the control plane to become ready
+2025-07-25 14:36:23 [✔]  saved kubeconfig as "/Users/ranjiniganeshan/.kube/config"
+2025-07-25 14:36:23 [ℹ]  no tasks
+2025-07-25 14:36:23 [✔]  all EKS cluster resources for "argocd" have been created
+2025-07-25 14:36:24 [ℹ]  nodegroup "public-ng-1" has 2 node(s)
+2025-07-25 14:36:24 [ℹ]  node "ip-10-0-134-208.ap-south-1.compute.internal" is ready
+2025-07-25 14:36:24 [ℹ]  node "ip-10-0-156-199.ap-south-1.compute.internal" is ready
+2025-07-25 14:36:24 [ℹ]  waiting for at least 2 node(s) to become ready in "public-ng-1"
+2025-07-25 14:36:24 [ℹ]  nodegroup "public-ng-1" has 2 node(s)
+2025-07-25 14:36:24 [ℹ]  node "ip-10-0-134-208.ap-south-1.compute.internal" is ready
+2025-07-25 14:36:24 [ℹ]  node "ip-10-0-156-199.ap-south-1.compute.internal" is ready
+2025-07-25 14:36:25 [ℹ]  kubectl command should work with "/Users/ranjiniganeshan/.kube/config", try 'kubectl get nodes'
+2025-07-25 14:36:25 [✔]  EKS cluster "argocd" in "ap-south-1" region is ready
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % kubectl get nodes -A
+NAME                                          STATUS   ROLES    AGE     VERSION
+ip-10-0-134-208.ap-south-1.compute.internal   Ready    <none>   4m29s   v1.28.15-eks-473151a
+ip-10-0-156-199.ap-south-1.compute.internal   Ready    <none>   4m27s   v1.28.15-eks-473151a
+```
+
 
 
 
