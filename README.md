@@ -292,9 +292,11 @@ Handling connection for 8081
 <img width="1308" height="771" alt="Screenshot 2025-07-28 at 11 25 45 AM" src="https://github.com/user-attachments/assets/c1540ad8-0a83-49e4-ad24-3a7b0ea46bd7" />
 
 ## Apply the kustomize changes for guestbook app
-```kubectl kustomize . | kubectl apply -f -
+```
+kubectl kustomize . | kubectl apply -f -
 service/kustomize-guestbook-ui created
-deployment.apps/kustomize-guestbook-ui created ```
+deployment.apps/kustomize-guestbook-ui created 
+```
 
   
 
