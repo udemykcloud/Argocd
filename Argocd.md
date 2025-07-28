@@ -412,6 +412,9 @@ replicaset.apps/prod-guestbook-ui-7bb94b6878   2         2         2       75s
 
 ## Canary Deployment
 
+* Argo CD Installation
+
+
 
 
   
