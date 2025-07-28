@@ -359,6 +359,55 @@ NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
 service/kubernetes   ClusterIP   172.20.0.1   <none>        443/TCP   74m
 ```
 
+## Deploy Kustomize to multiple environments
+
+
+* Apply from dev folder
+```
+kubectl create namespace dev
+namespace/dev created
+ranjiniganeshan@Ranjinis-MacBook-Pro dev % kubectl kustomize . | kubectl apply -f -
+service/dev-guestbook-ui created
+deployment.apps/dev-guestbook-ui created
+```
+* Verify the deployment in dev space
+
+```
+kubectl get all -n dev
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/dev-guestbook-ui-7bb94b6878-97zkd   1/1     Running   0          2m40s
+pod/dev-guestbook-ui-7bb94b6878-b4vdq   1/1     Running   0          2m40s
+
+NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/dev-guestbook-ui   ClusterIP   172.20.146.57   <none>        80/TCP    2m40s
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/dev-guestbook-ui   2/2     2            2           2m40s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/dev-guestbook-ui-7bb94b6878   2         2         2       2m40s
+```
+
+* Verify deloyment in prod namespace
+
+```
+kubectl get all -n prod
+NAME                                     READY   STATUS    RESTARTS   AGE
+pod/prod-guestbook-ui-7bb94b6878-bxhn7   1/1     Running   0          75s
+pod/prod-guestbook-ui-7bb94b6878-r6ldb   1/1     Running   0          75s
+
+NAME                        TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)   AGE
+service/prod-guestbook-ui   ClusterIP   172.20.73.31   <none>        80/TCP    75s
+
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/prod-guestbook-ui   2/2     2            2           75s
+
+NAME                                           DESIRED   CURRENT   READY   AGE
+replicaset.apps/prod-guestbook-ui-7bb94b6878   2         2         2       75s
+
+```
+
+
 
   
 
