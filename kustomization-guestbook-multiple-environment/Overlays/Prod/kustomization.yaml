@@ -1,6 +1,9 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: guestbook-ui
-spec:
-  replicas: 4
+namePrefix: prod-
+namespace: prod
+
+
+resources:
+- ../../base
+
+patches:
+- path: replicas.yaml
