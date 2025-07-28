@@ -186,6 +186,7 @@ argocd-server   LoadBalancer   172.20.157.188   a7a762123a8d14c71956e975afab7fff
 # Access argocd  UI using loadbalanacer name or External IP from the above output.
 <img width="1511" height="904" alt="Screenshot 2025-07-25 at 4 31 04 PM" src="https://github.com/user-attachments/assets/0b026038-cede-43fd-95af-dd84053d0a3f" />
 
+
 # Deploy the sample guestbook application on EKS using Argocd
 
 
