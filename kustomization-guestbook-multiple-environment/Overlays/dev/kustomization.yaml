@@ -7,4 +7,3 @@ resources:
 
 patches:
 - path: replicas.yaml
-- path: limits.yaml
