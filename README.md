@@ -288,7 +288,8 @@ Handling connection for 8081
 
 # Hands-On: Deploying kustomize-guestbook on an EKS Cluster on multiple environments.
 
-[White Beige Minimal Flowchart Diagram Graph.pdf](https://github.com/user-attachments/files/21461944/White.Beige.Minimal.Flowchart.Diagram.Graph.pdf)
+
+<img width="1308" height="771" alt="Screenshot 2025-07-28 at 11 25 45 AM" src="https://github.com/user-attachments/assets/c1540ad8-0a83-49e4-ad24-3a7b0ea46bd7" />
 
 
   
