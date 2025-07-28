@@ -502,6 +502,47 @@ networkpolicy.networking.k8s.io/argocd-server-network-policy created
 
 ```
 kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
+
+* Access argocd server using the UI https://localhost:8080/
+
+* Install Argo Rollout with canary deployment
+
+Argo Rollouts is a Kubernetes controller and set of Custom Resource Definitions (CRDs) that enable advanced deployment strategies like canary and blue-green deployments. Unlike standard Kubernetes Deployments, which use a RollingUpdate strategy, Argo Rollouts provides fine-grained control over traffic shifting and automated rollback based on metrics analysis. In a canary deployment, a new version of the application is gradually rolled out to a subset of users, allowing you to monitor its performance before fully promoting it.
+
+
+```
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+namespace/argo-rollouts created
+customresourcedefinition.apiextensions.k8s.io/analysisruns.argoproj.io created
+customresourcedefinition.apiextensions.k8s.io/analysistemplates.argoproj.io created
+customresourcedefinition.apiextensions.k8s.io/clusteranalysistemplates.argoproj.io created
+customresourcedefinition.apiextensions.k8s.io/experiments.argoproj.io created
+customresourcedefinition.apiextensions.k8s.io/rollouts.argoproj.io created
+serviceaccount/argo-rollouts created
+clusterrole.rbac.authorization.k8s.io/argo-rollouts created
+clusterrole.rbac.authorization.k8s.io/argo-rollouts-aggregate-to-admin created
+clusterrole.rbac.authorization.k8s.io/argo-rollouts-aggregate-to-edit created
+clusterrole.rbac.authorization.k8s.io/argo-rollouts-aggregate-to-view created
+clusterrolebinding.rbac.authorization.k8s.io/argo-rollouts created
+configmap/argo-rollouts-config created
+secret/argo-rollouts-notification-secret created
+service/argo-rollouts-metrics created
+deployment.apps/argo-rollouts created
+```
+
+
+* Install Argo rollouts kubectl plugins
+
+```
+curl -LO https://github.com/argoproj/argo-rollouts/releases/latest/download/kubectl-argo-rollouts-linux-amd64
+sudo mv kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
+sudo chmod +x /usr/local/bin/kubectl-argo-rollouts
+```
+
+
+
 
 
 
