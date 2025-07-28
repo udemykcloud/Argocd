@@ -209,6 +209,24 @@ Cluster 'https://08CFE27D9DF7F8C856685B1B57903353.gr7.ap-south-1.eks.amazonaws.c
 
 ```
 
+## Troubleshooting connecting to eks cluster
+
+```
+argocd login localhost:8080
+WARNING: server certificate had error: tls: failed to verify certificate: x509: certificate signed by unknown authority. Proceed insecurely (y/n)? y
+Username: admin
+Password: 
+'admin:login' logged in successfully
+Context 'localhost:8080' updated
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % argocd cluster add arn:aws:eks:ap-south-1:215959898119:cluster/argocd
+WARNING: This will create a service account `argocd-manager` on the cluster referenced by context `arn:aws:eks:ap-south-1:215959898119:cluster/argocd` with full cluster level privileges. Do you want to continue [y/N]? y
+INFO[0002] ServiceAccount "argocd-manager" already exists in namespace "kube-system" 
+INFO[0002] ClusterRole "argocd-manager-role" updated    
+INFO[0002] ClusterRoleBinding "argocd-manager-role-binding" updated 
+Cluster 'https://C3E7F917ACB77315439B17C40EB69E19.yl4.ap-south-1.eks.amazonaws.com' added
+
+```
+
 * deploy guestbook application
 
 -> Deploy 
