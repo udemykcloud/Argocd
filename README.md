@@ -297,7 +297,35 @@ kubectl kustomize . | kubectl apply -f -
 service/kustomize-guestbook-ui created
 deployment.apps/kustomize-guestbook-ui created 
 ```
+```
+kubectl  get all -A
+NAMESPACE     NAME                                          READY   STATUS    RESTARTS   AGE
+default       pod/kustomize-guestbook-ui-7bb94b6878-gkr8p   1/1     Running   0          34s
+kube-system   pod/aws-node-2cgd7                            2/2     Running   0          34m
+kube-system   pod/aws-node-t6wb7                            2/2     Running   0          34m
+kube-system   pod/coredns-56b8d964f7-cmcpb                  1/1     Running   0          38m
+kube-system   pod/coredns-56b8d964f7-pbtq7                  1/1     Running   0          38m
+kube-system   pod/kube-proxy-ck2bb                          1/1     Running   0          34m
+kube-system   pod/kube-proxy-vcxtg                          1/1     Running   0          34m
 
+NAMESPACE     NAME                                TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)         AGE
+default       service/kubernetes                  ClusterIP   172.20.0.1       <none>        443/TCP         39m
+default       service/kustomize-guestbook-ui      ClusterIP   172.20.152.180   <none>        80/TCP          34s
+kube-system   service/eks-extension-metrics-api   ClusterIP   172.20.16.225    <none>        443/TCP         39m
+kube-system   service/kube-dns                    ClusterIP   172.20.0.10      <none>        53/UDP,53/TCP   38m
+
+NAMESPACE     NAME                        DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+kube-system   daemonset.apps/aws-node     2         2         2       2            2           <none>          38m
+kube-system   daemonset.apps/kube-proxy   2         2         2       2            2           <none>          38m
+
+NAMESPACE     NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+default       deployment.apps/kustomize-guestbook-ui   1/1     1            1           34s
+kube-system   deployment.apps/coredns                  2/2     2            2           38m
+
+NAMESPACE     NAME                                                DESIRED   CURRENT   READY   AGE
+default       replicaset.apps/kustomize-guestbook-ui-7bb94b6878   1         1         1       34s
+kube-system   replicaset.apps/coredns-56b8d964f7                  2         2         2       38m
+```
   
 
 
