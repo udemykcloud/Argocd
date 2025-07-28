@@ -350,6 +350,16 @@ kubectl delete service kustomize-guestbook-ui -n default
 service "kustomize-guestbook-ui" deleted
 
 ```
+
+## Verify the cleanup is completed
+
+```
+kubectl get all -n default
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   172.20.0.1   <none>        443/TCP   74m
+```
+
+
   
 
 
