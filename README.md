@@ -326,6 +326,30 @@ NAMESPACE     NAME                                                DESIRED   CURR
 default       replicaset.apps/kustomize-guestbook-ui-7bb94b6878   1         1         1       34s
 kube-system   replicaset.apps/coredns-56b8d964f7                  2         2         2       38m
 ```
+## cleanup the simple kustomize app 
+
+```
+kubectl get all -n default
+NAME                                          READY   STATUS    RESTARTS   AGE
+pod/kustomize-guestbook-ui-7bb94b6878-gkr8p   1/1     Running   0          34m
+
+NAME                             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes               ClusterIP   172.20.0.1       <none>        443/TCP   73m
+service/kustomize-guestbook-ui   ClusterIP   172.20.152.180   <none>        80/TCP    34m
+
+NAME                                     READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/kustomize-guestbook-ui   1/1     1            1           34m
+
+NAME                                                DESIRED   CURRENT   READY   AGE
+replicaset.apps/kustomize-guestbook-ui-7bb94b6878   1         1         1       34m
+
+kubectl delete deployment kustomize-guestbook-ui -n default 
+deployment.apps "kustomize-guestbook-ui" deleted
+
+kubectl delete service kustomize-guestbook-ui -n default
+service "kustomize-guestbook-ui" deleted
+
+```
   
 
 
