@@ -543,6 +543,12 @@ sudo chmod +x /usr/local/bin/kubectl-argo-rollouts
 
 * Create and Sync ArgoCD Application
 ```
+
+argocd login acdfefaa342dc4669a3a920690820f36-1215039150.ap-southeast-1.elb.amazonaws.com
+
+aws eks --region ap-southeast-1 update-kubeconfig --name argocd
+ 1423  argocd cluster add arn:aws:eks:ap-southeast-1:215959898119:cluster/argocd
+
 argocd app create guestbook-rollout \
   --repo https://github.com/udemykcloud/argo-rollout-guestbook-demo.git \
   --path guestbook-rollout \
@@ -558,6 +564,7 @@ application 'guestbook-rollout' created
 
 
 <img width="1214" height="551" alt="Screenshot 2025-07-29 at 5 19 06 PM" src="https://github.com/user-attachments/assets/d9127aa6-02d1-4ff7-8ba1-840fac402980" />
+
 
 
 
