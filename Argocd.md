@@ -566,7 +566,41 @@ application 'guestbook-rollout' created
 <img width="1214" height="551" alt="Screenshot 2025-07-29 at 5 19 06 PM" src="https://github.com/user-attachments/assets/d9127aa6-02d1-4ff7-8ba1-840fac402980" />
 
 
+```
+argocd app sync guestbook-rollout
 
+argocd app sync guestbook-rollout
+TIMESTAMP                  GROUP                    KIND   NAMESPACE                  NAME    STATUS   HEALTH        HOOK  MESSAGE
+Name:            guestbook-ui
+Namespace:       default
+Status:          ॥ Paused
+Message:         CanaryPauseStep
+Strategy:        Canary
+  Step:          1/5
+  SetWeight:     20
+  ActualWeight:  20
+Images:          udemykcloud534/guestbook:blue (stable)
+                 udemykcloud534/guestbook:green (canary)
+Replicas:
+  Desired:       3
+  Current:       4
+  Updated:       1
+  Ready:         4
+  Available:     4
+
+NAME                                      KIND        STATUS     AGE  INFO
+⟳ guestbook-ui                            Rollout     ॥ Paused   28m  
+├──# revision:2                                                       
+│  └──⧉ guestbook-ui-7fb494c77f           ReplicaSet  ✔ Healthy  67s  canary
+│     └──□ guestbook-ui-7fb494c77f-7prts  Pod         ✔ Running  67s  ready:1/1
+└──# revision:1                                                       
+   └──⧉ guestbook-ui-69b5f444f6           ReplicaSet  ✔ Healthy  28m  stable
+      ├──□ guestbook-ui-69b5f444f6-24q5t  Pod         ✔ Running  28m  ready:1/1
+      ├──□ guestbook-ui-69b5f444f6-47d66  Pod         ✔ Running  28m  ready:1/1
+      └──□ guestbook-ui-69b5f444f6-ktjx4  Pod         ✔ Running  28m  ready:1/1
+```
+
+<img width="1509" height="936" alt="Screenshot 2025-07-29 at 5 26 39 PM" src="https://github.com/user-attachments/assets/07f5ff0d-0416-44b9-ac1b-73f540db7e5a" />
 
 
 
