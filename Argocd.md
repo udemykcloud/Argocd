@@ -541,6 +541,58 @@ sudo mv kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
 sudo chmod +x /usr/local/bin/kubectl-argo-rollouts
 ```
 
+* Create and Sync ArgoCD Application
+
+argocd app create guestbook-rollout \
+  --repo https://github.com/udemykcloud/argo-rollout-guestbook-demo.git \
+  --path guestbook-rollout \
+  --dest-server https://E86C8EA3F5648370F9E82266EF5404E5.gr7.ap-south-1.eks.amazonaws.com \
+  --dest-namespace default \
+  --sync-policy automated
+application 'guestbook-rollout' created
+
+
+argocd app sync guestbook-rollout
+TIMESTAMP                  GROUP                    KIND   NAMESPACE                  NAME    STATUS   HEALTH            HOOK  MESSAGE
+2025-07-29T16:07:18+05:30  argoproj.io           Rollout     default          guestbook-ui    Synced  Progressing              
+2025-07-29T16:07:18+05:30  networking.k8s.io     Ingress     default  guestbook-ui-ingress    Synced  Healthy                  
+2025-07-29T16:07:18+05:30                        Service     default          guestbook-ui    Synced  Healthy                  
+2025-07-29T16:07:18+05:30                        Service     default   guestbook-ui-canary    Synced  Healthy                  
+2025-07-29T16:07:20+05:30  networking.k8s.io     Ingress     default  guestbook-ui-ingress    Synced  Healthy                  ingress.networking.k8s.io/guestbook-ui-ingress unchanged
+2025-07-29T16:07:20+05:30  argoproj.io           Rollout     default          guestbook-ui    Synced  Progressing              rollout.argoproj.io/guestbook-ui configured
+2025-07-29T16:07:20+05:30                        Service     default   guestbook-ui-canary    Synced  Healthy                  service/guestbook-ui-canary unchanged
+2025-07-29T16:07:20+05:30                        Service     default          guestbook-ui    Synced  Healthy                  service/guestbook-ui unchanged
+
+Name:               argocd/guestbook-rollout
+Project:            default
+Server:             https://E86C8EA3F5648370F9E82266EF5404E5.gr7.ap-south-1.eks.amazonaws.com
+Namespace:          default
+URL:                https://localhost:8080/applications/guestbook-rollout
+Source:
+- Repo:             https://github.com/udemykcloud/argo-rollout-guestbook-demo.git
+  Target:           
+  Path:             guestbook-rollout
+SyncWindow:         Sync Allowed
+Sync Policy:        Automated
+Sync Status:        Synced to  (bdcd117)
+Health Status:      Progressing
+
+Operation:          Sync
+Sync Revision:      bdcd1174ac8519882cbf65c1322e11c59125d22d
+Phase:              Succeeded
+Start:              2025-07-29 16:07:18 +0530 IST
+Finished:           2025-07-29 16:07:20 +0530 IST
+Duration:           2s
+Message:            successfully synced (all tasks run)
+
+GROUP              KIND     NAMESPACE  NAME                  STATUS  HEALTH  HOOK  MESSAGE
+                   Service  default    guestbook-ui-canary   Synced                service/guestbook-ui-canary unchanged
+                   Service  default    guestbook-ui          Synced                service/guestbook-ui unchanged
+networking.k8s.io  Ingress  default    guestbook-ui-ingress  Synced                ingress.networking.k8s.io/guestbook-ui-ingress unchanged
+argoproj.io        Rollout  default    guestbook-ui          Synced                rollout.argoproj.io/guestbook-ui configured
+
+
+<img width="1509" height="892" alt="Screenshot 2025-07-29 at 4 05 11 PM" src="https://github.com/user-attachments/assets/1a9e9b3a-8d5c-4627-83fe-4ddad0434dbc" />
 
 
 
