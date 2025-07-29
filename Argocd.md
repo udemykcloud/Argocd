@@ -550,7 +550,7 @@ argocd app create guestbook-rollout \
   --dest-namespace default \
   --sync-policy automated
 application 'guestbook-rollout' created
-
+```
 
 <img width="1509" height="892" alt="Screenshot 2025-07-29 at 4 05 11 PM" src="https://github.com/user-attachments/assets/1a9e9b3a-8d5c-4627-83fe-4ddad0434dbc" />
 
