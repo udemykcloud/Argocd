@@ -602,6 +602,19 @@ NAME                                      KIND        STATUS     AGE  INFO
 
 <img width="1509" height="936" alt="Screenshot 2025-07-29 at 5 26 39 PM" src="https://github.com/user-attachments/assets/07f5ff0d-0416-44b9-ac1b-73f540db7e5a" />
 
+## Argo Rollout Blue-Green Deployment
+
+Blue-green deployment runs two versions of your app: the blue version guestbook:blue serves all traffic, while the green version guestbook:green is deployed but receives no traffic until you’re ready to switch. Once verified, you instantly switch all traffic to green, and blue is kept ready for rollback if needed.
+
+# How Blue green deployment works
+
+Blue Phase: 3 pods run blue, and the guestbook-ui service routes 100% traffic to them via the guestbook-ui-ingress.
+Green Phase: Deploy 3 pods with green. The guestbook-ui-canary service points to green pods, but no traffic goes there yet.
+Switch: When ready, Argo Rollouts updates the guestbook-ui service to point to green pods, instantly switching 100% traffic to green.
+Rollback: If green fails, switch back to blue with kubectl argo rollouts abort guestbook-ui -n default.
+
+
+
 
 
 
