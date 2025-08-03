@@ -614,6 +614,42 @@ Switch: When ready, Argo Rollouts updates the guestbook-ui service to point to g
 Rollback: If green fails, switch back to blue with kubectl argo rollouts abort guestbook-ui -n default.
 
 
+* Deploy the guestbook rollout 
+```
+argocd app create guestbook-rollout-blue-green \
+  --repo https://github.com/udemykcloud/argo-rollout-guestbook-blue-green.git \
+  --path Guestbook-Rollout \
+  --dest-server https://8591E3CED9235F9806846D8A7D48AA17.gr7.ap-south-1.eks.amazonaws.com\
+  --dest-namespace default \
+  --sync-policy automated
+application 'guestbook-rollout-blue-green' created
+
+argocd app sync guestbook-rollout
+```
+<img width="1512" height="857" alt="Screenshot 2025-08-03 at 8 02 40 AM" src="https://github.com/user-attachments/assets/ab015f55-6ce3-4183-aac6-a6b3fa58d9ff" />
+
+```
+kubectl get rollout guestbook-ui -n default
+kubectl get pods -n default -l app=guestbook-ui
+kubectl get svc guestbook-ui guestbook-ui-canary -n default
+kubectl get ingress guestbook-ui-ingress -n default
+NAME           DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+guestbook-ui   3         3         3            3           4m26s
+NAME                            READY   STATUS    RESTARTS   AGE
+guestbook-ui-69b5f444f6-bnzs8   1/1     Running   0          110s
+guestbook-ui-69b5f444f6-jm6nb   1/1     Running   0          110s
+guestbook-ui-69b5f444f6-z4cvr   1/1     Running   0          110s
+NAME                  TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+guestbook-ui          ClusterIP   172.20.213.255   <none>        80/TCP    11m
+guestbook-ui-canary   ClusterIP   172.20.69.232    <none>        80/TCP    11m
+NAME                   CLASS   HOSTS   ADDRESS                                                                          PORTS   AGE
+guestbook-ui-ingress   nginx   *       ad4f4512b69764ce584fa54e2963ac58-2d903841f319d5b3.elb.ap-south-1.amazonaws.com   80      11m
+
+```
+
+
+
+
 
 
 
