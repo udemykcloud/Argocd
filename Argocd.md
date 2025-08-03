@@ -646,6 +646,83 @@ NAME                   CLASS   HOSTS   ADDRESS                                  
 guestbook-ui-ingress   nginx   *       ad4f4512b69764ce584fa54e2963ac58-2d903841f319d5b3.elb.ap-south-1.amazonaws.com   80      11m
 
 ```
+## Test the blue version of the app
+
+
+
+<img width="1512" height="900" alt="Screenshot 2025-08-03 at 8 04 16 AM" src="https://github.com/user-attachments/assets/fff08d6f-1427-4c04-94fa-276d6081131c" />
+
+## Perform Blue green deployment
+
+Update Manifest:
+Edit guestbook-rollout.yaml to use image: udemykcloud534/guestbook:green
+
+```
+spec:
+  template:
+    spec:
+      containers:
+        - name: guestbook-ui
+          image: udemykcloud534/guestbook:green
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          imagePullSecrets:
+            - name: dockerhub-secret
+```
+
+* Monitor 
+```
+
+Name:            guestbook-ui
+Namespace:       default
+Status:          ॥ Paused
+Message:         BlueGreenPause
+Strategy:        BlueGreen
+Images:          udemykcloud534/guestbook:blue (stable, active)
+                 udemykcloud534/guestbook:green (preview)
+Replicas:
+  Desired:       3
+  Current:       6
+  Updated:       3
+  Ready:         3
+  Available:     3
+
+NAME                                      KIND        STATUS     AGE  INFO
+⟳ guestbook-ui                            Rollout     ॥ Paused   29m  
+├──# revision:2                                                       
+│  └──⧉ guestbook-ui-7fb494c77f           ReplicaSet  ✔ Healthy  21s  preview
+│     ├──□ guestbook-ui-7fb494c77f-6cg6p  Pod         ✔ Running  21s  ready:1/1
+│     ├──□ guestbook-ui-7fb494c77f-tps2h  Pod         ✔ Running  21s  ready:1/1
+│     └──□ guestbook-ui-7fb494c77f-w2cgh  Pod         ✔ Running  21s  ready:1/1
+└──# revision:1                                                       
+   └──⧉ guestbook-ui-69b5f444f6           ReplicaSet  ✔ Healthy  27m  stable,active
+      ├──□ guestbook-ui-69b5f444f6-bnzs8  Pod         ✔ Running  26m  ready:1/1
+      ├──□ guestbook-ui-69b5f444f6-jm6nb  Pod         ✔ Running  26m  ready:1/1
+      └──□ guestbook-ui-69b5f444f6-z4cvr  Pod         ✔ Running  26m  ready:1/1
+
+
+```
+## Perform Blue-Green Deployment:
+
+```
+kubectl edit ingress guestbook-ui-ingress -n default 
+ingress.networking.k8s.io/guestbook-ui-ingress edited
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % kubectl argo rollouts promote guestbook-ui -n default
+rollout 'guestbook-ui' promoted
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % 
+
+```
+
+http://ad4f4512b69764ce584fa54e2963ac58-2d903841f319d5b3.elb.ap-south-1.amazonaws.com/
+<img width="1510" height="900" alt="Screenshot 2025-08-03 at 8 32 01 AM" src="https://github.com/user-attachments/assets/ab94c942-dd8e-49a5-9e8b-855df4aece17" />
+
+
 
 
 
