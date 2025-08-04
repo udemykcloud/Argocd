@@ -175,11 +175,9 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 # Exposing argocd using loadbalancer
 
 ```
-kubectl -n argocd patch svc argocd-server -p '{"spec": {"type": "LoadBalancer"}}'
-service/argocd-server patched
-ranjiniganeshan@Ranjinis-MacBook-Pro udemy % kubectl -n argocd get svc argocd-server
-NAME            TYPE           CLUSTER-IP       EXTERNAL-IP                                                                PORT(S)                      AGE
-argocd-server   LoadBalancer   172.20.157.188   a7a762123a8d14c71956e975afab7fff-2020289002.ap-south-1.elb.amazonaws.com   80:30677/TCP,443:30757/TCP   51m
+kubectl -n argocd patch svc argocd-server -p '{"spec": {"type": "LoadBalancer"}}'\
+
+kubectl -n argocd get svc argocd-server
 
 ```
 
