@@ -209,6 +209,45 @@ Cluster 'https://08CFE27D9DF7F8C856685B1B57903353.gr7.ap-south-1.eks.amazonaws.c
 
 ```
 
+************************************************************************************************************************************************
+
+## ArgoCD Architecture
+ArgoCD is designed as a Kubernetes-native tool that simplifies continuous delivery using the GitOps approach. Its architecture consists of key components that work together to monitor, manage, and deploy applications. Below is a simple breakdown of its architecture, focusing on the core elements, how it integrates with Kubernetes, and its sync policies and reconciliation process.
+Application Controller, API Server, and Repository Server
+
+* Application Controller: This is the core component that continuously monitors the state of applications. It compares the live state of applications running in the Kubernetes cluster with the desired state defined in the Git repository. If it detects any differences (called drift), it flags the application as OutOfSync and takes action based on configured policies.
+* API Server: The API Server provides a way to interact with ArgoCD. It powers the web user interface (UI) and command-line interface (CLI), allowing users to view application status, trigger syncs, or manage configurations. It also handles authentication and authorization, integrating with SSO providers like OIDC, LDAP, or GitHub.
+* Repository Server: This component fetches and processes the application configurations stored in Git repositories. It supports various formats like YAML, Helm charts, Kustomize, or Jsonnet, and generates the Kubernetes manifests needed for deployment.
+
+## ArgoCD as a Kubernetes Extension
+
+
+ArgoCD is built as a Kubernetes controller, meaning it runs natively within a Kubernetes cluster and uses Kubernetes APIs to manage resources. It’s installed in a dedicated namespace (typically argocd) and leverages Kubernetes custom resources to define and track applications. This tight integration allows ArgoCD to:
+
+Monitor and manage applications as Kubernetes resources.
+Scale with the cluster, handling multiple applications and environments efficiently.
+Work seamlessly with existing Kubernetes tools and workflows, making it a natural fit for teams already using Kubernetes.
+
+## Sync Policies and Reconciliation Process
+
+ArgoCD uses a reconciliation loop to ensure the live state of applications matches the desired state in the Git repository. Here's how it works:
+
+Sync Policies: These define how ArgoCD handles synchronization when differences are detected:
+
+* Manual Sync: Users manually trigger synchronization via the UI or CLI to apply changes from the Git repository.
+Automated Sync: ArgoCD automatically applies changes from the Git repository to the cluster whenever updates are detected, reducing manual intervention.
+* Sync Options: Policies can include settings like pruning (removing resources no longer in Git), self-healing (reverting unauthorized changes), or selective syncing (applying specific resources).
+
+
+Reconciliation Process: The Application Controller periodically checks the live state against the Git-defined state. If they differ:
+
+ArgoCD identifies the discrepancies (e.g., missing resources, incorrect configurations).
+It applies the necessary changes to align the cluster with the Git repository, based on the sync policy.
+It supports advanced rollout strategies like blue/green or canary deployments through sync hooks (PreSync, Sync, PostSync).
+
+
+Visualization and Reporting: ArgoCD’s UI and CLI provide real-time insights into the sync status, showing which applications are in sync, out of sync, or degraded, along with detailed logs and audit trails.
+
 ## Troubleshooting connecting to eks cluster
 
 ```
