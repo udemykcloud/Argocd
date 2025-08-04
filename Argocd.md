@@ -274,8 +274,8 @@ argocd app create guestbook \
   --dest-server https://08CFE27D9DF7F8C856685B1B57903353.gr7.ap-south-1.eks.amazonaws.com \
   --dest-namespace default
 application 'guestbook' created
-
 ```
+
 -> Sync the app and verify the deplyment
 ```
 argocd app sync guestbook
@@ -584,15 +584,23 @@ sudo chmod +x /usr/local/bin/kubectl-argo-rollouts
 argocd login acdfefaa342dc4669a3a920690820f36-1215039150.ap-southeast-1.elb.amazonaws.com
 
 aws eks --region ap-southeast-1 update-kubeconfig --name argocd
- 1423  argocd cluster add arn:aws:eks:ap-southeast-1:215959898119:cluster/argocd
 
+argocd cluster add arn:aws:eks:ap-southeast-1:215959898119:cluster/argocd
+```
+
+```
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/aws/deploy.yaml
+
+```
+```
 argocd app create guestbook-rollout \
   --repo https://github.com/udemykcloud/argo-rollout-guestbook-demo.git \
   --path guestbook-rollout \
   --dest-server https://E86C8EA3F5648370F9E82266EF5404E5.gr7.ap-south-1.eks.amazonaws.com \
   --dest-namespace default \
   --sync-policy automated
-application 'guestbook-rollout' created
+
 ```
 
 <img width="1509" height="892" alt="Screenshot 2025-07-29 at 4 05 11 PM" src="https://github.com/user-attachments/assets/1a9e9b3a-8d5c-4627-83fe-4ddad0434dbc" />
@@ -755,9 +763,9 @@ rollout 'guestbook-ui' promoted
 ranjiniganeshan@Ranjinis-MacBook-Pro udemy % 
 
 ```
+## Green version is rolled out.
 
-http://ad4f4512b69764ce584fa54e2963ac58-2d903841f319d5b3.elb.ap-south-1.amazonaws.com/
-<img width="1510" height="900" alt="Screenshot 2025-08-03 at 8 32 01 AM" src="https://github.com/user-attachments/assets/ab94c942-dd8e-49a5-9e8b-855df4aece17" />
+<img width="1509" height="651" alt="Screenshot 2025-08-04 at 8 49 01 PM" src="https://github.com/user-attachments/assets/eee9421b-4513-4783-81c3-5027ca40ec52" />
 
 
 
