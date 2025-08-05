@@ -12,4 +12,4 @@ kind: Kustomization
 images:
 - name: udemykcloud534/guestbook
   newName: udemykcloud534/guestbook
-  newTag: staging-20250731-090203-22647a7
+  newTag: staging-20250805-055618-d3c1ce2
