@@ -4,7 +4,7 @@ kind: ClusterConfig
 metadata:
   name: argocd
   region: ap-south-1
-  version: "1.28"
+  version: "1.32"
 
 vpc:
   id: "vpc-0f0b671dd0cb25b84"
