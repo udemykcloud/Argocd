@@ -902,7 +902,23 @@ argocd-repo-server-856b768fd9-gwff5                 1/1     Running   0         
 argocd-server-99c485944-bq6d7                       1/1     Running   0          2m28s
 ```
 
+## Adding private repositories
 
+###Generate a token in GitHub:
+
+* Go to GitHub → Settings → Developer settings → Personal Access Tokens → Tokens (classic).
+  Click Generate new token (classic).
+* Give it a name, expiration date, and select:
+repo (full control for private repos; for public repos, read:packages is enough)
+Click Generate token and copy it.
+
+```
+argocd repo add https://github.com/udemykcloud/guestbook \
+  --username udemykcloud \
+  --password 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
+Repository 'https://github.com/udemykcloud/guestbook' added
+
+```
 
 
 
