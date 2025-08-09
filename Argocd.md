@@ -768,6 +768,141 @@ ranjiniganeshan@Ranjinis-MacBook-Pro udemy %
 <img width="1509" height="651" alt="Screenshot 2025-08-04 at 8 49 01 PM" src="https://github.com/user-attachments/assets/eee9421b-4513-4783-81c3-5027ca40ec52" />
 
 
+## Minikube Installation
+
+Preq
+**********************************************************************************************************************************************
+
+* Docker Desktop installed on your machine.
+
+* Docker development tools enabled inside Visual Studio.
+**********************************************************************************************************************************************
+
+```
+sudo curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-darwin-arm64 
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  124M  100  124M    0     0  2862k      0  0:00:44  0:00:44 --:--:-- 5373k
+ranjiniganeshan@Ranjinis-MacBook-Pro bin % sudo chmod +x minikube-darwin-arm64
+ranjiniganeshan@Ranjinis-MacBook-Pro bin % sudo mv minikube-darwin-arm64 /usr/local/bin/minikube
+ranjiniganeshan@Ranjinis-MacBook-Pro bin % minikube version  
+minikube version: v1.36.0
+commit: f8f52f5de11fc6ad8244afac475e1d0f96841df1-dirty
+```
+
+```
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+```
+
+```
+minikube start --driver=docker
+😄  minikube v1.36.0 on Darwin 15.4.1 (arm64)
+✨  Using the docker driver based on user configuration
+📌  Using Docker Desktop driver with root privileges
+👍  Starting "minikube" primary control-plane node in "minikube" cluster
+🚜  Pulling base image v0.0.47 ...
+💾  Downloading Kubernetes v1.33.1 preload ...
+    > gcr.io/k8s-minikube/kicbase...:  463.69 MiB / 463.69 MiB  100.00% 3.75 Mi
+    > preloaded-images-k8s-v18-v1...:  327.15 MiB / 327.15 MiB  100.00% 1.65 Mi
+🔥  Creating docker container (CPUs=2, Memory=4000MB) ...
+🐳  Preparing Kubernetes v1.33.1 on Docker 28.1.1 ...
+    ▪ Generating certificates and keys ...
+    ▪ Booting up control plane ...
+    ▪ Configuring RBAC rules ...
+🔗  Configuring bridge CNI (Container Networking Interface) ...
+🔎  Verifying Kubernetes components...
+    ▪ Using image gcr.io/k8s-minikube/storage-provisioner:v5
+🌟  Enabled addons: default-storageclass, storage-provisioner
+🏄  Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+```
+
+## argocd installation process in minikube
+```
+kubectl create namespace argocd
+namespace/argocd created
+ranjiniganeshan@Ranjinis-MacBook-Pro bin % kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+customresourcedefinition.apiextensions.k8s.io/applications.argoproj.io created
+customresourcedefinition.apiextensions.k8s.io/applicationsets.argoproj.io created
+customresourcedefinition.apiextensions.k8s.io/appprojects.argoproj.io created
+serviceaccount/argocd-application-controller created
+serviceaccount/argocd-applicationset-controller created
+serviceaccount/argocd-dex-server created
+serviceaccount/argocd-notifications-controller created
+serviceaccount/argocd-redis created
+serviceaccount/argocd-repo-server created
+serviceaccount/argocd-server created
+role.rbac.authorization.k8s.io/argocd-application-controller created
+role.rbac.authorization.k8s.io/argocd-applicationset-controller created
+role.rbac.authorization.k8s.io/argocd-dex-server created
+role.rbac.authorization.k8s.io/argocd-notifications-controller created
+role.rbac.authorization.k8s.io/argocd-redis created
+role.rbac.authorization.k8s.io/argocd-server created
+clusterrole.rbac.authorization.k8s.io/argocd-application-controller created
+clusterrole.rbac.authorization.k8s.io/argocd-applicationset-controller created
+clusterrole.rbac.authorization.k8s.io/argocd-server created
+rolebinding.rbac.authorization.k8s.io/argocd-application-controller created
+rolebinding.rbac.authorization.k8s.io/argocd-applicationset-controller created
+rolebinding.rbac.authorization.k8s.io/argocd-dex-server created
+rolebinding.rbac.authorization.k8s.io/argocd-notifications-controller created
+rolebinding.rbac.authorization.k8s.io/argocd-redis created
+rolebinding.rbac.authorization.k8s.io/argocd-server created
+clusterrolebinding.rbac.authorization.k8s.io/argocd-application-controller created
+clusterrolebinding.rbac.authorization.k8s.io/argocd-applicationset-controller created
+clusterrolebinding.rbac.authorization.k8s.io/argocd-server created
+configmap/argocd-cm created
+configmap/argocd-cmd-params-cm created
+configmap/argocd-gpg-keys-cm created
+configmap/argocd-notifications-cm created
+configmap/argocd-rbac-cm created
+configmap/argocd-ssh-known-hosts-cm created
+configmap/argocd-tls-certs-cm created
+secret/argocd-notifications-secret created
+secret/argocd-secret created
+service/argocd-applicationset-controller created
+service/argocd-dex-server created
+service/argocd-metrics created
+service/argocd-notifications-controller-metrics created
+service/argocd-redis created
+service/argocd-repo-server created
+service/argocd-server created
+service/argocd-server-metrics created
+deployment.apps/argocd-applicationset-controller created
+deployment.apps/argocd-dex-server created
+deployment.apps/argocd-notifications-controller created
+deployment.apps/argocd-redis created
+deployment.apps/argocd-repo-server created
+deployment.apps/argocd-server created
+statefulset.apps/argocd-application-controller created
+networkpolicy.networking.k8s.io/argocd-application-controller-network-policy created
+networkpolicy.networking.k8s.io/argocd-applicationset-controller-network-policy created
+networkpolicy.networking.k8s.io/argocd-dex-server-network-policy created
+networkpolicy.networking.k8s.io/argocd-notifications-controller-network-policy created
+networkpolicy.networking.k8s.io/argocd-redis-network-policy created
+networkpolicy.networking.k8s.io/argocd-repo-server-network-policy created
+networkpolicy.networking.k8s.io/argocd-server-network-policy created
+ranjiniganeshan@Ranjinis-MacBook-Pro bin % kubectl get pods -n argocd
+NAME                                                READY   STATUS              RESTARTS   AGE
+argocd-application-controller-0                     0/1     ContainerCreating   0          20s
+argocd-applicationset-controller-655cc58ff8-hc9lz   0/1     ContainerCreating   0          21s
+argocd-dex-server-7d9dfb4fb8-bc5zb                  0/1     Init:0/1            0          21s
+argocd-notifications-controller-6c6848bc4c-k68g9    0/1     ContainerCreating   0          21s
+argocd-redis-656c79549c-4w6zr                       0/1     Init:0/1            0          21s
+argocd-repo-server-856b768fd9-gwff5                 0/1     Init:0/1            0          21s
+argocd-server-99c485944-bq6d7                       0/1     ContainerCreating   0          21s
+ranjiniganeshan@Ranjinis-MacBook-Pro bin % kubectl get pods -n argocd
+NAME                                                READY   STATUS    RESTARTS   AGE
+argocd-application-controller-0                     1/1     Running   0          2m27s
+argocd-applicationset-controller-655cc58ff8-hc9lz   1/1     Running   0          2m28s
+argocd-dex-server-7d9dfb4fb8-bc5zb                  1/1     Running   0          2m28s
+argocd-notifications-controller-6c6848bc4c-k68g9    1/1     Running   0          2m28s
+argocd-redis-656c79549c-4w6zr                       1/1     Running   0          2m28s
+argocd-repo-server-856b768fd9-gwff5                 1/1     Running   0          2m28s
+argocd-server-99c485944-bq6d7                       1/1     Running   0          2m28s
+```
+
+
 
 
 
