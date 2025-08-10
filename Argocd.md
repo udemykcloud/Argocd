@@ -912,6 +912,8 @@ argocd-server-99c485944-bq6d7                       1/1     Running   0         
 repo (full control for private repos; for public repos, read:packages is enough)
 Click Generate token and copy it.
 
+
+## Verify once the permission ?
 ```
 argocd repo add https://github.com/udemykcloud/guestbook \
   --username udemykcloud \
