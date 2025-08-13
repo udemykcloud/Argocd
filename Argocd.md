@@ -931,6 +931,10 @@ Repository 'https://github.com/udemykcloud/guestbook' added
 <img width="1504" height="125" alt="Screenshot 2025-08-13 at 8 11 03 PM" src="https://github.com/user-attachments/assets/b4f354a9-e0a3-4ccd-9911-232aa3ed1fe2" />
 
 
+<img width="1499" height="358" alt="Screenshot 2025-08-13 at 8 12 35 PM" src="https://github.com/user-attachments/assets/67738e63-b283-49d3-9d05-a7f48cb717d4" />
+
+* create eks cluster by filling the details in cluster.yaml
+
 
 
 
