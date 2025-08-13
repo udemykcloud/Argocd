@@ -923,6 +923,17 @@ argocd repo add https://github.com/udemykcloud/guestbook \
 Repository 'https://github.com/udemykcloud/guestbook' added
 
 ```
+## Using helm deploy to multiple clusters
+
+## Preq for deploying on multiple eks clusters
+
+* create vpc using the template https://s3.amazonaws.com/aws-quickstart/quickstart-aws-vpc/templates/aws-vpc.template.yaml. dev vpc in ap-south and prod vpc in ap-southeast region
+<img width="1504" height="125" alt="Screenshot 2025-08-13 at 8 11 03 PM" src="https://github.com/user-attachments/assets/b4f354a9-e0a3-4ccd-9911-232aa3ed1fe2" />
+
+
+
+
+
 
 
 
