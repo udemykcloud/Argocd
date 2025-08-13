@@ -539,6 +539,8 @@ networkpolicy.networking.k8s.io/argocd-server-network-policy created
 
 ```
 kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d > password.txt
 ```
 
 * Access argocd server using the UI https://localhost:8080/
