@@ -10,14 +10,14 @@ resources:
 patches:
 - path: replicas.yaml
 - path: rollout-service-names-patch.yaml
-- target:
+- path: ingress-patch.yaml
+  target:
     kind: Ingress
     name: guestbook-ui-ingress
-  path: ingress-patch.yaml
 
 
 
 images:
 - name: udemykcloud534/guestbook
   newName: udemykcloud534/guestbook
-  newTag: staging-20250814-092925-711a6bb
+  newTag: staging-20250814-113100-494668f
