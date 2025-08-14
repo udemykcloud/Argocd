@@ -4,3 +4,4 @@ resources:
 - guestbook-ui-deployment.yaml
 - guestbook-ui-svc.yaml
 - guestbook-rollout.yaml
+- guestbook-ingress.yaml
