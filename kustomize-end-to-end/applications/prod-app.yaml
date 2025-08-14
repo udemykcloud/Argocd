@@ -4,7 +4,7 @@ metadata:
   name: guestbook-prod
   namespace: argocd
 spec:
-  project: default
+  project: guestbook
   source:
     repoURL: 'https://github.com/udemykcloud/Argocd.git'
     targetRevision: main      # Branch for prod
