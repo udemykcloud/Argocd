@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: guestbook-ui-ingress
-  namespace: dev
+  namespace: dev   # MUST match the overlay namespace
 spec:
   rules:
     - http:
