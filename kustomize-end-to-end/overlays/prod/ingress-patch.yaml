@@ -1,8 +1,8 @@
+# overlays/staging/ingress-patch.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: guestbook-ui-ingress
-  namespace: prod
+  name: guestbook-ui-ingress  # base name, not prefixed
 spec:
   rules:
     - http:
