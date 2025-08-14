@@ -32,5 +32,5 @@ spec:
     blueGreen:
       activeService: guestbook-ui
       previewService: guestbook-ui-canary
-      autoPromotionEnabled: false
+      autoPromotionEnabled: true
       scaleDownDelaySeconds: 300
