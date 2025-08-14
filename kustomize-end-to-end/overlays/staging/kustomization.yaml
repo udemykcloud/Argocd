@@ -9,6 +9,7 @@ resources:
 
 patches:
 - path: replicas.yaml
+- path: rollout-service-names-patch.yaml
 
 images:
 - name: udemykcloud534/guestbook
