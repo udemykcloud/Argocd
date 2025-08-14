@@ -6,4 +6,10 @@ resources:
 
 patches:
 - path: replicas.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+images:
+- name: udemykcloud534/guestbook
+  newName: udemykcloud534/guestbook
+  newTag: staging-20250814-082953-7091376
 - path: service-patch.yaml
