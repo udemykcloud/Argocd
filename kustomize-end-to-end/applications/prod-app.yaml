@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: guestbook-dev
+  name: guestbook-prod
   namespace: argocd
 spec:
   project: guestbook
   source:
     repoURL: 'https://github.com/udemykcloud/Argocd.git'
-    targetRevision: staging      # Branch for staging
-    path: kustomize-end-to-end/overlays/staging
+    targetRevision: main      # Branch for prod
+    path: kustomize-end-to-end/overlays/prod
   destination:
     server: https://kubernetes.default.svc
-    namespace: staging
+    namespace: prod
   syncPolicy:
     automated:
       prune: true
