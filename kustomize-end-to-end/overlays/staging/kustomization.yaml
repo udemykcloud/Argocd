@@ -6,3 +6,4 @@ resources:
 
 patches:
 - path: replicas.yaml
+- path: service-patch.yaml
