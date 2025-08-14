@@ -9,7 +9,6 @@ resources:
 
 patches:
 - path: replicas.yaml
-- path: service-patch.yaml
 
 images:
 - name: udemykcloud534/guestbook
