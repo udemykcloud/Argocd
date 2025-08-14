@@ -1,0 +1,9 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: guestbook-ui
+spec:
+  strategy:
+    blueGreen:
+      activeService: prod-guestbook-ui
+      previewService: prod-guestbook-ui-canary
