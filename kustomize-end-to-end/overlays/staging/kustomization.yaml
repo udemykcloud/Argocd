@@ -10,6 +10,8 @@ resources:
 patches:
 - path: replicas.yaml
 - path: rollout-service-names-patch.yaml
+- path: ingress-patch.yaml
+
 
 images:
 - name: udemykcloud534/guestbook
