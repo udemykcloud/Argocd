@@ -4,7 +4,7 @@ metadata:
   name: guestbook
   namespace: argocd
 spec:
-  description: Project for testt repo with only Deployment allowed
+  description: Project for test repo with all namespaced resources allowed
   sourceRepos:
     - https://github.com/udemykcloud/Argocd.git
   destinations:
@@ -14,12 +14,5 @@ spec:
       server: https://kubernetes.default.svc
   clusterResourceWhitelist: []
   namespaceResourceWhitelist:
-    - group: apps
-      kind: Deployment
-    - group: batch
-      kind: Job
-    - group: ""
-      kind: Service
-    - group: ""
-      kind: Secret
-
+    - group: "*"
+      kind: "*"

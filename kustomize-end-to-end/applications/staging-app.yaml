@@ -4,7 +4,7 @@ metadata:
   name: guestbook-dev
   namespace: argocd
 spec:
-  project: default
+  project: guestbook
   source:
     repoURL: 'https://github.com/udemykcloud/Argocd.git'
     targetRevision: staging      # Branch for staging
