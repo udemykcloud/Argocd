@@ -928,6 +928,15 @@ Repository 'https://github.com/udemykcloud/guestbook' added
 ## Preq for deploying on multiple eks clusters
 
 * create eks cluster using eksctl . Use the config available in dev-cluster.yaml and prod-cluster.yaml
+* install argocd
+* install argo rollout
+* install ingress
+```
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/aws/deploy.yaml
+
+```
+
 
 
 
