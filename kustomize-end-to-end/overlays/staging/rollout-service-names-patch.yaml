@@ -5,5 +5,5 @@ metadata:
 spec:
   strategy:
     blueGreen:
-      activeService: dev-guestbook-ui
-      previewService: dev-guestbook-ui-canary
+      activeService: stg-guestbook-ui
+      previewService: stg-guestbook-ui-canary
