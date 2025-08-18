@@ -8,7 +8,7 @@ spec:
   sourceRepos:
     - https://github.com/udemykcloud/Argocd.git
   destinations:
-    - namespace: staging
+    - namespace: stg
       server: https://kubernetes.default.svc
     - namespace: prod
       server: https://kubernetes.default.svc

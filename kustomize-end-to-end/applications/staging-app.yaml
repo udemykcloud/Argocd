@@ -11,7 +11,7 @@ spec:
     path: kustomize-end-to-end/overlays/staging
   destination:
     server: https://kubernetes.default.svc
-    namespace: staging
+    namespace: stg
   syncPolicy:
     automated:
       prune: true
