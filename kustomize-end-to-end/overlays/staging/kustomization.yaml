@@ -20,4 +20,4 @@ patches:
 images:
 - name: udemykcloud534/guestbook
   newName: udemykcloud534/guestbook
-  newTag: staging-20250814-121019-f601f47
+  newTag: sha-4b626cc
