@@ -1,0 +1,47 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gmail-smtp-secret
+type: Opaque
+stringData:
+  gmail_user: "erchandika@gmail.com"
+  gmail_pass: "accd ipms pljh ayzo"
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  generateName: notify-email-
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  template:
+    spec:
+      containers:
+      - name: email-notifier
+        image: alpine:3.20
+        command: ["/bin/sh", "-c"]
+        args:
+        - |
+          apk add --no-cache msmtp-mta
+          echo "Subject: ArgoCD Deployment Success" > /tmp/message.txt
+          echo "" >> /tmp/message.txt
+          echo "✅ ArgoCD Sync completed successfully!" >> /tmp/message.txt
+          msmtp --host=smtp.gmail.com --port=587 --auth=on \
+            --user="$GMAIL_USER" --password="$GMAIL_PASS" \
+            --tls=on erchandika92yahoo.com < /tmp/message.txt
+        env:
+        - name: GMAIL_USER
+          valueFrom:
+            secretKeyRef:
+              name: gmail-smtp-secret
+              key: gmail_user
+        - name: GMAIL_PASS
+          valueFrom:
+            secretKeyRef:
+              name: gmail-smtp-secret
+              key: gmail_pass
+      restartPolicy: Never
+  backoffLimit: 1

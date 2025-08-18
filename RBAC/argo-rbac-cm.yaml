@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+  namespace: argocd
+data:
+  policy.csv: |
+    # Role: Read-only for testt-project
+    p, role:readonly-testt, applications, get, testt-project/*, allow
+    p, role:readonly-testt, projects, get, testt-project, allow
+
+    # Bind user 'chandika' to the role
+    g, chandika, role:readonly-testt
+  policy.default: role:readonly
