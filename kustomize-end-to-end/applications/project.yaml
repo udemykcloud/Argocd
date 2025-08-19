@@ -8,11 +8,15 @@ spec:
   sourceRepos:
     - https://github.com/udemykcloud/Argocd.git
   destinations:
-    - namespace: dev
+    - namespace: stg
       server: https://kubernetes.default.svc
     - namespace: prod
       server: https://kubernetes.default.svc
-  clusterResourceWhitelist: []
+    - namespace: dev
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
   namespaceResourceWhitelist:
     - group: "*"
       kind: "*"

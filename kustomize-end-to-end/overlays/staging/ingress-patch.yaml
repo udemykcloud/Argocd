@@ -1,16 +1,18 @@
-# overlays/staging/ingress-patch.yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: guestbook-ui-ingress  # base name, not prefixed
+  name: guestbook-ui-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
   rules:
     - http:
         paths:
-          - path: /
+          - path: /stg(/|$)(.*)
             pathType: Prefix
             backend:
               service:
-                name: dev-guestbook-ui
+                name: stg-guestbook-ui
                 port:
                   number: 80
