@@ -20,4 +20,4 @@ patches:
 images:
 - name: udemykcloud534/guestbook
   newName: udemykcloud534/guestbook
-  newTag: sha-4b626cc
+  newTag: sha-294feac
