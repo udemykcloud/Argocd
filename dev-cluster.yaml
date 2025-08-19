@@ -2,27 +2,23 @@ apiVersion: eksctl.io/v1alpha5
 kind: ClusterConfig
 
 metadata:
-  name: dev-argocd
+  name: dev-cluster
   region: ap-south-1
-  version: "1.31"
+  version: "1.32"
 
 vpc:
-  id: "vpc-0dbc2e24e4985898e"
-  subnets:
-    public:
-      ap-south-1a:
-        id: subnet-0a46589e78b49ef6a
-      ap-south-1b:
-        id: subnet-03843d7eedcafa0f0
+  nat:
+    gateway: Single # Cost-optimized: Single NAT Gateway for all subnets
 
 nodeGroups:
-  - name: public-ng-1
-    instanceType: t2.medium
+  - name: ng-1
+    instanceType: t2.small
     desiredCapacity: 2
     minSize: 2
     maxSize: 2
-    subnets:
-      - ap-south-1a
-      - ap-south-1b
+    privateNetworking: false # Nodes in public subnets
     ssh:
-      allow: true
+      allow: false
+    iam:
+      withAddonPolicies:
+        autoScaler: true
