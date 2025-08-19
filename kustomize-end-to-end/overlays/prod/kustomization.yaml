@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namePrefix: prod-
+namespace: prod
+
+resources:
+- ../../base
+
+patches:
+- path: replicas.yaml
+- path: rollout-service-names-patch.yaml
+- path: ingress-patch.yaml
+  target:
+    kind: Ingress
+    name: guestbook-ui-ingress
+images:
+- name: udemykcloud534/guestbook
+  newName: udemykcloud534/guestbook
+  newTag: prod-20250819-070400-1ceeae5
