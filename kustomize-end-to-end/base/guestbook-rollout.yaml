@@ -2,7 +2,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: guestbook-ui
-  namespace: default
 spec:
   replicas: 3
   revisionHistoryLimit: 2
