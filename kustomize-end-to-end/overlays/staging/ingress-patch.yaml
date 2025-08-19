@@ -7,7 +7,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /
+          - path: /stg
             pathType: Prefix
             backend:
               service:
