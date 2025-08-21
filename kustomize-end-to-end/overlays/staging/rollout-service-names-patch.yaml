@@ -7,3 +7,5 @@ spec:
     blueGreen:
       activeService: stg-guestbook-ui
       previewService: stg-guestbook-ui-canary
+      autoPromotionEnabled: false   # 👈 ensure QAs must test first
+      autoPromotionSeconds: 30      # (optional) auto-promote after X seconds
