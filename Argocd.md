@@ -956,6 +956,18 @@ kubectl -n argocd get svc argocd-server
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" 
 
 ```
+* Add repository
+
+```
+argocd login af08479d59d704ecca8e778ccb12a455-1020298881.ap-south-1.elb.amazonaws.com
+WARNING: server certificate had error: tls: failed to verify certificate: x509: certificate signed by unknown authority. Proceed insecurely (y/n)? y
+Username: admin
+Password: 
+'admin:login' logged in successfully
+Context 'af08479d59d704ecca8e778ccb12a455-1020298881.ap-south-1.elb.amazonaws.com' updated
+ranjiniganeshan@Ranjinis-MacBook-Pro argocd-application % argocd repo add https://github.com/udemykcloud/guestbook-ui.git 
+Repository 'https://github.com/udemykcloud/guestbook-ui.git' added
+```
 
 
 
