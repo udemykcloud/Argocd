@@ -952,9 +952,11 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 
 ```
 kubectl -n argocd patch svc argocd-server -p '{"spec": {"type": "LoadBalancer"}}'\
-
 kubectl -n argocd get svc argocd-server
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" 
+
 ```
+
 
 
 
