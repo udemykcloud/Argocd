@@ -969,7 +969,57 @@ ranjiniganeshan@Ranjinis-MacBook-Pro argocd-application % argocd repo add https:
 Repository 'https://github.com/udemykcloud/guestbook-ui.git' added
 ```
 
+* Adding Prod eks cluster to dev argocd 
 
+```
+
+kubectl apply -f prod-argocd-setup.yaml
+
+# Verify the ServiceAccount was created
+kubectl get serviceaccount argocd-manager -n kube-system
+
+
+kubectl cluster-info | grep 'Kubernetes control plane' | awk '{print $NF}' > prod-api-url.txt
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % kubectl get secret -n kube-system -o jsonpath='{.data.ca\.crt}' $(kubectl get secrets -n kube-system | grep default-token | head -n1 | awk '{print $1}') | base64 -d > prod-ca.crt
+No resources found in kube-system namespace.
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % kubectl create token argocd-manager -n kube-system --duration=8760h > prod-token.txt
+Warning: requested expiration of 31536000 seconds shortened to 86400 seconds
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % cat prod-token.txt
+eyJhbGciOiJSUzI1NiIsImtpZCI6IjAxZjJlMzM0ZmJjNzA2NDkzNWRkNmU3MDIxN2VkNTE0M2EyY2Q4YTMifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjIl0sImV4cCI6MTc1NTg1MDk4OSwiaWF0IjoxNzU1NzY0NTg5LCJpc3MiOiJodHRwczovL29pZGMuZWtzLmFwLXNvdXRoLTEuYW1hem9uYXdzLmNvbS9pZC81OUE3MjY3RTIzM0NDNDJCODVDMjczMjRGQjlFMzM3OSIsImp0aSI6ImJlNWMwYjQwLTQxMWEtNGYyZi04MDMzLWFjYzdhN2Y0MmM2NiIsImt1YmVybmV0ZXMuaW8iOnsibmFtZXNwYWNlIjoia3ViZS1zeXN0ZW0iLCJzZXJ2aWNlYWNjb3VudCI6eyJuYW1lIjoiYXJnb2NkLW1hbmFnZXIiLCJ1aWQiOiJhOGVmOWIzNy0xMjYyLTRiZWYtYTljNy04MzRhYzEwOWJiZGEifX0sIm5iZiI6MTc1NTc2NDU4OSwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmFyZ29jZC1tYW5hZ2VyIn0.bXZPghDjn7VGCqYyZwF3Qw-1NYQYGWUOWum3q7oLedblNzXq91MvBgOvcTMbem5Dsy8ZHunFl66lcY1hsAjjC__WJjtX0dVCOVh5ZVSdLa5SduhTcNUqlCYs6CaFo-_YiM2KTUe6qBzqW1MjbS8PD3SDpOg_tDXbJa_bq6ebcGt4eQyyWXxQjYywAnXYQmWEOc52kvsOpBg9mXbF0LQ59-UbpLqQU2tXdmQJNDfOwLRKHGyA6IXfm_UUWpwMH1GBXdM6tXwQA_SPCMsi0s6Aw73LT15yE03pdKTJ2VsjyjZIXKlOwqKNNNgNiLoJpOkbvaNqJmJFUw85daRuHTPAvw%                 
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % aws eks update-kubeconfig --name  dev-argocd-cluster --region ap-s
+outh-1
+Added new context arn:aws:eks:ap-south-1:215959898119:cluster/dev-argocd-cluster to /Users/ranjiniganeshan/.kube/config
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % cat > argocd-prod-cluster-secret.yaml << EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: prod-argocd-cluster
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+type: Opaque
+stringData:
+  name: prod-argocd-cluster
+  server: $(cat prod-api-url.txt)
+  config: |
+    {
+      "bearerToken": "$(cat prod-token.txt | tr -d '\n')",
+      "tlsClientConfig": {
+        "caData": "$(cat prod-ca.crt | base64 | tr -d '\n')",
+        "insecure": false
+      }
+    }
+EOF
+
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % kubectl apply -f  argocd-prod-cluster-secret.yaml
+secret/prod-argocd-cluster created
+ranjiniganeshan@Ranjinis-MacBook-Pro udemy % argocd cluster list
+SERVER                                                                     NAME                 VERSION  STATUS   MESSAGE                                                  PROJECT
+https://59A7267E233CC42B85C27324FB9E3379.gr7.ap-south-1.eks.amazonaws.com  prod-argocd-cluster           Unknown  Cluster has no applications and is not being monitored.  
+https://kubernetes.default.svc                                             in-cluster                    Unknown  Cluster has no applications and is not being monitored. 
+
+
+```
 
 
 
