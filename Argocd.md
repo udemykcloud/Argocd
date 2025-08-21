@@ -945,11 +945,18 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 kubectl create namespace argo-rollouts
 kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
 ```
-
-
+```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/aws/deploy.yaml
+```
+* Access argo cd using loadbalancer service
 
 ```
+kubectl -n argocd patch svc argocd-server -p '{"spec": {"type": "LoadBalancer"}}'\
+
+kubectl -n argocd get svc argocd-server
+```
+
+
 
 
 
