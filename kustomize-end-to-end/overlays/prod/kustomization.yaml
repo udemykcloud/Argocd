@@ -17,4 +17,4 @@ patches:
 images:
 - name: udemykcloud534/guestbook
   newName: udemykcloud534/guestbook
-  newTag: prod-20250819-070400-1ceeae5
+  newTag: green
