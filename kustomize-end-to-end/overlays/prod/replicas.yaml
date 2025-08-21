@@ -3,4 +3,4 @@ kind: Rollout
 metadata:
   name: guestbook-ui
 spec:
-  replicas: 3
+  replicas: 2
