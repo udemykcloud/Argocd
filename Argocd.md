@@ -1021,6 +1021,65 @@ https://kubernetes.default.svc                                             in-cl
 
 ```
 
+* Adding prod eks to argocd dev cluster
+```
+kubectl config get-contexts                
+CURRENT   NAME                                                                CLUSTER                                                             AUTHINFO                                                            NAMESPACE
+          admin@cdit-cluster.us-west-2.eksctl.io                              cdit-cluster.us-west-2.eksctl.io                                    admin@cdit-cluster.us-west-2.eksctl.io                              
+          admin@demo-cluster.us-west-2.eksctl.io                              demo-cluster.us-west-2.eksctl.io                                    admin@demo-cluster.us-west-2.eksctl.io                              
+          admin@dev-secops-cluster.us-west-2.eksctl.io                        dev-secops-cluster.us-west-2.eksctl.io                              admin@dev-secops-cluster.us-west-2.eksctl.io                        
+          admin@devopsguru-eks-cluster.us-west-2.eksctl.io                    devopsguru-eks-cluster.us-west-2.eksctl.io                          admin@devopsguru-eks-cluster.us-west-2.eksctl.io                    
+          admin@eks-cluster.ap-south-1.eksctl.io                              eks-cluster.ap-south-1.eksctl.io                                    admin@eks-cluster.ap-south-1.eksctl.io                              
+          admin@test1.us-east-2.eksctl.io                                     test1.us-east-2.eksctl.io                                           admin@test1.us-east-2.eksctl.io                                     
+          argo@eks-cluster-01.us-east-1.eksctl.io                             eks-cluster-01.us-east-1.eksctl.io                                  argo@eks-cluster-01.us-east-1.eksctl.io                             
+          argo@eks-cluster-02.us-east-1.eksctl.io                             eks-cluster-02.us-east-1.eksctl.io                                  argo@eks-cluster-02.us-east-1.eksctl.io                             staging
+          arn:aws:eks:ap-south-1:215959898119:cluster/argocd                  arn:aws:eks:ap-south-1:215959898119:cluster/argocd                  arn:aws:eks:ap-south-1:215959898119:cluster/argocd                  
+*         arn:aws:eks:ap-south-1:215959898119:cluster/dev-argocd-cluster      arn:aws:eks:ap-south-1:215959898119:cluster/dev-argocd-cluster      arn:aws:eks:ap-south-1:215959898119:cluster/dev-argocd-cluster      
+          arn:aws:eks:ap-south-1:215959898119:cluster/dev-cluster             arn:aws:eks:ap-south-1:215959898119:cluster/dev-cluster             arn:aws:eks:ap-south-1:215959898119:cluster/dev-cluster             
+          arn:aws:eks:ap-south-1:215959898119:cluster/kubect                  arn:aws:eks:ap-south-1:215959898119:cluster/kubect                  arn:aws:eks:ap-south-1:215959898119:cluster/kubect                  
+          arn:aws:eks:ap-south-1:215959898119:cluster/prod-argocd-cluster     arn:aws:eks:ap-south-1:215959898119:cluster/prod-argocd-cluster     arn:aws:eks:ap-south-1:215959898119:cluster/prod-argocd-cluster     
+          arn:aws:eks:ap-southeast-1:215959898119:cluster/argocd              arn:aws:eks:ap-southeast-1:215959898119:cluster/argocd              arn:aws:eks:ap-southeast-1:215959898119:cluster/argocd              
+          arn:aws:eks:ap-southeast-1:909293070315:cluster/demo-eks-cluster    arn:aws:eks:ap-southeast-1:909293070315:cluster/demo-eks-cluster    arn:aws:eks:ap-southeast-1:909293070315:cluster/demo-eks-cluster    
+          arn:aws:eks:us-east-1:529088274388:cluster/cditmonitoring           arn:aws:eks:us-east-1:529088274388:cluster/cditmonitoring           arn:aws:eks:us-east-1:529088274388:cluster/cditmonitoring           
+          arn:aws:eks:us-east-1:529088274388:cluster/cditpractise             arn:aws:eks:us-east-1:529088274388:cluster/cditpractise             arn:aws:eks:us-east-1:529088274388:cluster/cditpractise             
+          arn:aws:eks:us-east-1:529088274388:cluster/my-eks-cluster           arn:aws:eks:us-east-1:529088274388:cluster/my-eks-cluster           arn:aws:eks:us-east-1:529088274388:cluster/my-eks-cluster           
+          arn:aws:eks:us-east-1:909293070315:cluster/ToDo-App                 arn:aws:eks:us-east-1:909293070315:cluster/ToDo-App                 arn:aws:eks:us-east-1:909293070315:cluster/ToDo-App                 
+          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-DUNeRuW4   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-DUNeRuW4   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-DUNeRuW4   
+          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-RfQlLZo1   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-RfQlLZo1   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-RfQlLZo1   
+          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-TIGgWgxv   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-TIGgWgxv   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-TIGgWgxv   
+          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-ifedZHyO   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-ifedZHyO   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-ifedZHyO   
+          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-vERAk9Kc   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-vERAk9Kc   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-vERAk9Kc   
+          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-x3GPbfj9   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-x3GPbfj9   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-x3GPbfj9   
+          arn:aws:eks:us-west-2:909293070315:cluster/dev-secops-cluster       arn:aws:eks:us-west-2:909293070315:cluster/dev-secops-cluster       arn:aws:eks:us-west-2:909293070315:cluster/dev-secops-cluster       
+          devopsguru@demo-cluster-metrics1.us-west-2.eksctl.io                demo-cluster-metrics1.us-west-2.eksctl.io                           devopsguru@demo-cluster-metrics1.us-west-2.eksctl.io                
+          devopsguru@demo-cluster-practise.us-west-2.eksctl.io                demo-cluster-practise.us-west-2.eksctl.io                           devopsguru@demo-cluster-practise.us-west-2.eksctl.io                
+          devopsguru@demo-eks.us-west-2.eksctl.io                             demo-eks.us-west-2.eksctl.io                                        devopsguru@demo-eks.us-west-2.eksctl.io                             
+          devopsguru@demo-headless.us-west-2.eksctl.io                        demo-headless.us-west-2.eksctl.io                                   devopsguru@demo-headless.us-west-2.eksctl.io                        
+          devopsguru@new-dev-cluster.us-west-2.eksctl.io                      new-dev-cluster.us-west-2.eksctl.io                                 devopsguru@new-dev-cluster.us-west-2.eksctl.io                      
+          devopsguru@new-metric-cluster.us-west-2.eksctl.io                   new-metric-cluster.us-west-2.eksctl.io                              devopsguru@new-metric-cluster.us-west-2.eksctl.io                   
+          minikube                                                            minikube                                                            minikube                                                            default
+          ranjini@argocd.ap-south-1.eksctl.io                                 argocd.ap-south-1.eksctl.io                                         ranjini@argocd.ap-south-1.eksctl.io                                 
+          ranjini@argocd.ap-southeast-1.eksctl.io                             argocd.ap-southeast-1.eksctl.io                                     ranjini@argocd.ap-southeast-1.eksctl.io                             
+          ranjini@dev-argocd-cluster.ap-south-1.eksctl.io                     dev-argocd-cluster.ap-south-1.eksctl.io                             ranjini@dev-argocd-cluster.ap-south-1.eksctl.io                     
+          ranjini@dev-cluster.ap-south-1.eksctl.io                            dev-cluster.ap-south-1.eksctl.io                                    ranjini@dev-cluster.ap-south-1.eksctl.io                            
+          ranjini@dev1-argocd-cluster.ap-south-1.eksctl.io                    dev1-argocd-cluster.ap-south-1.eksctl.io                            ranjini@dev1-argocd-cluster.ap-south-1.eksctl.io                    
+          ranjini@kubect.ap-south-1.eksctl.io                                 kubect.ap-south-1.eksctl.io                                         ranjini@kubect.ap-south-1.eksctl.io                                 
+          ranjini@prod-argocd-cluster.ap-south-1.eksctl.io                    prod-argocd-cluster.ap-south-1.eksctl.io                            ranjini@prod-argocd-cluster.ap-south-1.eksctl.io                    
+          ranjini@prod-cluster.ap-south-1.eksctl.io                           prod-cluster.ap-south-1.eksctl.io                                   ranjini@prod-cluster.ap-south-1.eksctl.io                           
+ranjiniganeshan@Ranjinis-MacBook-Pro guestbook-ui % argocd cluster add rod-argocd-cluster.ap-south-1.eksctl.io
+{"level":"fatal","msg":"Context rod-argocd-cluster.ap-south-1.eksctl.io does not exist in kubeconfig","time":"2025-08-21T20:44:44+05:30"}
+ranjiniganeshan@Ranjinis-MacBook-Pro guestbook-ui % argocd cluster add prod-argocd-cluster.ap-south-1.eksctl.io
+
+{"level":"fatal","msg":"Context prod-argocd-cluster.ap-south-1.eksctl.io does not exist in kubeconfig","time":"2025-08-21T20:44:55+05:30"}
+ranjiniganeshan@Ranjinis-MacBook-Pro guestbook-ui % argocd cluster add ranjini@prod-argocd-cluster.ap-south-1.eksctl.io
+WARNING: This will create a service account `argocd-manager` on the cluster referenced by context `ranjini@prod-argocd-cluster.ap-south-1.eksctl.io` with full cluster level privileges. Do you want to continue [y/N]? y
+{"level":"info","msg":"ServiceAccount \"argocd-manager\" already exists in namespace \"kube-system\"","time":"2025-08-21T20:45:34+05:30"}
+{"level":"info","msg":"ClusterRole \"argocd-manager-role\" updated","time":"2025-08-21T20:45:34+05:30"}
+{"level":"info","msg":"ClusterRoleBinding \"argocd-manager-role-binding\" updated","time":"2025-08-21T20:45:34+05:30"}
+{"level":"info","msg":"Created bearer token secret for ServiceAccount \"argocd-manager\"","time":"2025-08-21T20:45:35+05:30"}
+Cluster 'https://59A7267E233CC42B85C27324FB9E3379.gr7.ap-south-1.eks.amazonaws.com' added
+```
+
 
 
 
