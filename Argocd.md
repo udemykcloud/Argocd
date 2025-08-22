@@ -1070,8 +1070,7 @@ ranjiniganeshan@Ranjinis-MacBook-Pro guestbook-ui % argocd cluster add rod-argoc
 {"level":"fatal","msg":"Context rod-argocd-cluster.ap-south-1.eksctl.io does not exist in kubeconfig","time":"2025-08-21T20:44:44+05:30"}
 ranjiniganeshan@Ranjinis-MacBook-Pro guestbook-ui % argocd cluster add prod-argocd-cluster.ap-south-1.eksctl.io
 
-{"level":"fatal","msg":"Context prod-argocd-cluster.ap-south-1.eksctl.io does not exist in kubeconfig","time":"2025-08-21T20:44:55+05:30"}
-ranjiniganeshan@Ranjinis-MacBook-Pro guestbook-ui % argocd cluster add ranjini@prod-argocd-cluster.ap-south-1.eksctl.io
+argocd cluster add ranjini@prod-argocd-cluster.ap-south-1.eksctl.io
 WARNING: This will create a service account `argocd-manager` on the cluster referenced by context `ranjini@prod-argocd-cluster.ap-south-1.eksctl.io` with full cluster level privileges. Do you want to continue [y/N]? y
 {"level":"info","msg":"ServiceAccount \"argocd-manager\" already exists in namespace \"kube-system\"","time":"2025-08-21T20:45:34+05:30"}
 {"level":"info","msg":"ClusterRole \"argocd-manager-role\" updated","time":"2025-08-21T20:45:34+05:30"}
