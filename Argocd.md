@@ -1077,6 +1077,16 @@ WARNING: This will create a service account `argocd-manager` on the cluster refe
 {"level":"info","msg":"ClusterRoleBinding \"argocd-manager-role-binding\" updated","time":"2025-08-21T20:45:34+05:30"}
 {"level":"info","msg":"Created bearer token secret for ServiceAccount \"argocd-manager\"","time":"2025-08-21T20:45:35+05:30"}
 Cluster 'https://59A7267E233CC42B85C27324FB9E3379.gr7.ap-south-1.eks.amazonaws.com' added
+
+
+
+
+kubectl config use-context prod-cluster
+
+argocd cluster add prod-cluster
+
+argocd cluster list
+
 ```
 
 
