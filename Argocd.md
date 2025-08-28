@@ -925,12 +925,19 @@ Repository 'https://github.com/udemykcloud/guestbook' added
 ```
 ## Using helm deploy to multiple clusters
 
-## Preq for deploying on multiple eks clusters
+## Preq for deploying on multiple eks clusters. 
+
 
 * create eks cluster using eksctl . Use the config available in dev-cluster.yaml and prod-cluster.yaml
+```
+eksctl create cluster -f /Users/ranjiniganeshan/udemy/Argocd/prod-cluster.yaml
+eksctl create cluster -f /Users/ranjiniganeshan/udemy/Argocd/dev-cluster.yaml
+```
+
 * install argocd
 * install argo rollout
 * install ingress
+
 
 
 * Argocd  Install
@@ -951,10 +958,25 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 * Access argo cd using loadbalancer service
 
 ```
-kubectl -n argocd patch svc argocd-server -p '{"spec": {"type": "LoadBalancer"}}'\
+kubectl -n argocd patch svc argocd-server -p '{"spec": {"type": "LoadBalancer"}}'
 kubectl -n argocd get svc argocd-server
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" 
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d > password_helm.txt
 
+```
+
+
+## Adding prod cluster to argocd 
+
+## configure ArgoCD to manage the external production cluster
+
+* Argo Rollout install
+
+```
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+```
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/aws/deploy.yaml
 ```
 * Add repository
 
@@ -967,108 +989,14 @@ Password:
 Context 'af08479d59d704ecca8e778ccb12a455-1020298881.ap-south-1.elb.amazonaws.com' updated
 ranjiniganeshan@Ranjinis-MacBook-Pro argocd-application % argocd repo add https://github.com/udemykcloud/guestbook-ui.git 
 Repository 'https://github.com/udemykcloud/guestbook-ui.git' added
-```
-
-* Adding Prod eks cluster to dev argocd 
 
 ```
 
-kubectl apply -f prod-argocd-setup.yaml
-
-# Verify the ServiceAccount was created
-kubectl get serviceaccount argocd-manager -n kube-system
-
-
-kubectl cluster-info | grep 'Kubernetes control plane' | awk '{print $NF}' > prod-api-url.txt
-ranjiniganeshan@Ranjinis-MacBook-Pro udemy % kubectl get secret -n kube-system -o jsonpath='{.data.ca\.crt}' $(kubectl get secrets -n kube-system | grep default-token | head -n1 | awk '{print $1}') | base64 -d > prod-ca.crt
-No resources found in kube-system namespace.
-ranjiniganeshan@Ranjinis-MacBook-Pro udemy % kubectl create token argocd-manager -n kube-system --duration=8760h > prod-token.txt
-Warning: requested expiration of 31536000 seconds shortened to 86400 seconds
-ranjiniganeshan@Ranjinis-MacBook-Pro udemy % cat prod-token.txt
-eyJhbGciOiJSUzI1NiIsImtpZCI6IjAxZjJlMzM0ZmJjNzA2NDkzNWRkNmU3MDIxN2VkNTE0M2EyY2Q4YTMifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjIl0sImV4cCI6MTc1NTg1MDk4OSwiaWF0IjoxNzU1NzY0NTg5LCJpc3MiOiJodHRwczovL29pZGMuZWtzLmFwLXNvdXRoLTEuYW1hem9uYXdzLmNvbS9pZC81OUE3MjY3RTIzM0NDNDJCODVDMjczMjRGQjlFMzM3OSIsImp0aSI6ImJlNWMwYjQwLTQxMWEtNGYyZi04MDMzLWFjYzdhN2Y0MmM2NiIsImt1YmVybmV0ZXMuaW8iOnsibmFtZXNwYWNlIjoia3ViZS1zeXN0ZW0iLCJzZXJ2aWNlYWNjb3VudCI6eyJuYW1lIjoiYXJnb2NkLW1hbmFnZXIiLCJ1aWQiOiJhOGVmOWIzNy0xMjYyLTRiZWYtYTljNy04MzRhYzEwOWJiZGEifX0sIm5iZiI6MTc1NTc2NDU4OSwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50Omt1YmUtc3lzdGVtOmFyZ29jZC1tYW5hZ2VyIn0.bXZPghDjn7VGCqYyZwF3Qw-1NYQYGWUOWum3q7oLedblNzXq91MvBgOvcTMbem5Dsy8ZHunFl66lcY1hsAjjC__WJjtX0dVCOVh5ZVSdLa5SduhTcNUqlCYs6CaFo-_YiM2KTUe6qBzqW1MjbS8PD3SDpOg_tDXbJa_bq6ebcGt4eQyyWXxQjYywAnXYQmWEOc52kvsOpBg9mXbF0LQ59-UbpLqQU2tXdmQJNDfOwLRKHGyA6IXfm_UUWpwMH1GBXdM6tXwQA_SPCMsi0s6Aw73LT15yE03pdKTJ2VsjyjZIXKlOwqKNNNgNiLoJpOkbvaNqJmJFUw85daRuHTPAvw%                 
-ranjiniganeshan@Ranjinis-MacBook-Pro udemy % aws eks update-kubeconfig --name  dev-argocd-cluster --region ap-s
-outh-1
-Added new context arn:aws:eks:ap-south-1:215959898119:cluster/dev-argocd-cluster to /Users/ranjiniganeshan/.kube/config
-ranjiniganeshan@Ranjinis-MacBook-Pro udemy % cat > argocd-prod-cluster-secret.yaml << EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: prod-argocd-cluster
-  namespace: argocd
-  labels:
-    argocd.argoproj.io/secret-type: cluster
-type: Opaque
-stringData:
-  name: prod-argocd-cluster
-  server: $(cat prod-api-url.txt)
-  config: |
-    {
-      "bearerToken": "$(cat prod-token.txt | tr -d '\n')",
-      "tlsClientConfig": {
-        "caData": "$(cat prod-ca.crt | base64 | tr -d '\n')",
-        "insecure": false
-      }
-    }
-EOF
-
-ranjiniganeshan@Ranjinis-MacBook-Pro udemy % kubectl apply -f  argocd-prod-cluster-secret.yaml
-secret/prod-argocd-cluster created
 ranjiniganeshan@Ranjinis-MacBook-Pro udemy % argocd cluster list
 SERVER                                                                     NAME                 VERSION  STATUS   MESSAGE                                                  PROJECT
 https://59A7267E233CC42B85C27324FB9E3379.gr7.ap-south-1.eks.amazonaws.com  prod-argocd-cluster           Unknown  Cluster has no applications and is not being monitored.  
 https://kubernetes.default.svc                                             in-cluster                    Unknown  Cluster has no applications and is not being monitored. 
 
-
-```
-
-* Adding prod eks to argocd dev cluster
-```
-kubectl config get-contexts                
-CURRENT   NAME                                                                CLUSTER                                                             AUTHINFO                                                            NAMESPACE
-          admin@cdit-cluster.us-west-2.eksctl.io                              cdit-cluster.us-west-2.eksctl.io                                    admin@cdit-cluster.us-west-2.eksctl.io                              
-          admin@demo-cluster.us-west-2.eksctl.io                              demo-cluster.us-west-2.eksctl.io                                    admin@demo-cluster.us-west-2.eksctl.io                              
-          admin@dev-secops-cluster.us-west-2.eksctl.io                        dev-secops-cluster.us-west-2.eksctl.io                              admin@dev-secops-cluster.us-west-2.eksctl.io                        
-          admin@devopsguru-eks-cluster.us-west-2.eksctl.io                    devopsguru-eks-cluster.us-west-2.eksctl.io                          admin@devopsguru-eks-cluster.us-west-2.eksctl.io                    
-          admin@eks-cluster.ap-south-1.eksctl.io                              eks-cluster.ap-south-1.eksctl.io                                    admin@eks-cluster.ap-south-1.eksctl.io                              
-          admin@test1.us-east-2.eksctl.io                                     test1.us-east-2.eksctl.io                                           admin@test1.us-east-2.eksctl.io                                     
-          argo@eks-cluster-01.us-east-1.eksctl.io                             eks-cluster-01.us-east-1.eksctl.io                                  argo@eks-cluster-01.us-east-1.eksctl.io                             
-          argo@eks-cluster-02.us-east-1.eksctl.io                             eks-cluster-02.us-east-1.eksctl.io                                  argo@eks-cluster-02.us-east-1.eksctl.io                             staging
-          arn:aws:eks:ap-south-1:215959898119:cluster/argocd                  arn:aws:eks:ap-south-1:215959898119:cluster/argocd                  arn:aws:eks:ap-south-1:215959898119:cluster/argocd                  
-*         arn:aws:eks:ap-south-1:215959898119:cluster/dev-argocd-cluster      arn:aws:eks:ap-south-1:215959898119:cluster/dev-argocd-cluster      arn:aws:eks:ap-south-1:215959898119:cluster/dev-argocd-cluster      
-          arn:aws:eks:ap-south-1:215959898119:cluster/dev-cluster             arn:aws:eks:ap-south-1:215959898119:cluster/dev-cluster             arn:aws:eks:ap-south-1:215959898119:cluster/dev-cluster             
-          arn:aws:eks:ap-south-1:215959898119:cluster/kubect                  arn:aws:eks:ap-south-1:215959898119:cluster/kubect                  arn:aws:eks:ap-south-1:215959898119:cluster/kubect                  
-          arn:aws:eks:ap-south-1:215959898119:cluster/prod-argocd-cluster     arn:aws:eks:ap-south-1:215959898119:cluster/prod-argocd-cluster     arn:aws:eks:ap-south-1:215959898119:cluster/prod-argocd-cluster     
-          arn:aws:eks:ap-southeast-1:215959898119:cluster/argocd              arn:aws:eks:ap-southeast-1:215959898119:cluster/argocd              arn:aws:eks:ap-southeast-1:215959898119:cluster/argocd              
-          arn:aws:eks:ap-southeast-1:909293070315:cluster/demo-eks-cluster    arn:aws:eks:ap-southeast-1:909293070315:cluster/demo-eks-cluster    arn:aws:eks:ap-southeast-1:909293070315:cluster/demo-eks-cluster    
-          arn:aws:eks:us-east-1:529088274388:cluster/cditmonitoring           arn:aws:eks:us-east-1:529088274388:cluster/cditmonitoring           arn:aws:eks:us-east-1:529088274388:cluster/cditmonitoring           
-          arn:aws:eks:us-east-1:529088274388:cluster/cditpractise             arn:aws:eks:us-east-1:529088274388:cluster/cditpractise             arn:aws:eks:us-east-1:529088274388:cluster/cditpractise             
-          arn:aws:eks:us-east-1:529088274388:cluster/my-eks-cluster           arn:aws:eks:us-east-1:529088274388:cluster/my-eks-cluster           arn:aws:eks:us-east-1:529088274388:cluster/my-eks-cluster           
-          arn:aws:eks:us-east-1:909293070315:cluster/ToDo-App                 arn:aws:eks:us-east-1:909293070315:cluster/ToDo-App                 arn:aws:eks:us-east-1:909293070315:cluster/ToDo-App                 
-          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-DUNeRuW4   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-DUNeRuW4   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-DUNeRuW4   
-          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-RfQlLZo1   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-RfQlLZo1   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-RfQlLZo1   
-          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-TIGgWgxv   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-TIGgWgxv   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-TIGgWgxv   
-          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-ifedZHyO   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-ifedZHyO   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-ifedZHyO   
-          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-vERAk9Kc   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-vERAk9Kc   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-vERAk9Kc   
-          arn:aws:eks:us-east-2:909293070315:cluster/education-eks-x3GPbfj9   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-x3GPbfj9   arn:aws:eks:us-east-2:909293070315:cluster/education-eks-x3GPbfj9   
-          arn:aws:eks:us-west-2:909293070315:cluster/dev-secops-cluster       arn:aws:eks:us-west-2:909293070315:cluster/dev-secops-cluster       arn:aws:eks:us-west-2:909293070315:cluster/dev-secops-cluster       
-          devopsguru@demo-cluster-metrics1.us-west-2.eksctl.io                demo-cluster-metrics1.us-west-2.eksctl.io                           devopsguru@demo-cluster-metrics1.us-west-2.eksctl.io                
-          devopsguru@demo-cluster-practise.us-west-2.eksctl.io                demo-cluster-practise.us-west-2.eksctl.io                           devopsguru@demo-cluster-practise.us-west-2.eksctl.io                
-          devopsguru@demo-eks.us-west-2.eksctl.io                             demo-eks.us-west-2.eksctl.io                                        devopsguru@demo-eks.us-west-2.eksctl.io                             
-          devopsguru@demo-headless.us-west-2.eksctl.io                        demo-headless.us-west-2.eksctl.io                                   devopsguru@demo-headless.us-west-2.eksctl.io                        
-          devopsguru@new-dev-cluster.us-west-2.eksctl.io                      new-dev-cluster.us-west-2.eksctl.io                                 devopsguru@new-dev-cluster.us-west-2.eksctl.io                      
-          devopsguru@new-metric-cluster.us-west-2.eksctl.io                   new-metric-cluster.us-west-2.eksctl.io                              devopsguru@new-metric-cluster.us-west-2.eksctl.io                   
-          minikube                                                            minikube                                                            minikube                                                            default
-          ranjini@argocd.ap-south-1.eksctl.io                                 argocd.ap-south-1.eksctl.io                                         ranjini@argocd.ap-south-1.eksctl.io                                 
-          ranjini@argocd.ap-southeast-1.eksctl.io                             argocd.ap-southeast-1.eksctl.io                                     ranjini@argocd.ap-southeast-1.eksctl.io                             
-          ranjini@dev-argocd-cluster.ap-south-1.eksctl.io                     dev-argocd-cluster.ap-south-1.eksctl.io                             ranjini@dev-argocd-cluster.ap-south-1.eksctl.io                     
-          ranjini@dev-cluster.ap-south-1.eksctl.io                            dev-cluster.ap-south-1.eksctl.io                                    ranjini@dev-cluster.ap-south-1.eksctl.io                            
-          ranjini@dev1-argocd-cluster.ap-south-1.eksctl.io                    dev1-argocd-cluster.ap-south-1.eksctl.io                            ranjini@dev1-argocd-cluster.ap-south-1.eksctl.io                    
-          ranjini@kubect.ap-south-1.eksctl.io                                 kubect.ap-south-1.eksctl.io                                         ranjini@kubect.ap-south-1.eksctl.io                                 
-          ranjini@prod-argocd-cluster.ap-south-1.eksctl.io                    prod-argocd-cluster.ap-south-1.eksctl.io                            ranjini@prod-argocd-cluster.ap-south-1.eksctl.io                    
-          ranjini@prod-cluster.ap-south-1.eksctl.io                           prod-cluster.ap-south-1.eksctl.io                                   ranjini@prod-cluster.ap-south-1.eksctl.io                           
-ranjiniganeshan@Ranjinis-MacBook-Pro guestbook-ui % argocd cluster add rod-argocd-cluster.ap-south-1.eksctl.io
-{"level":"fatal","msg":"Context rod-argocd-cluster.ap-south-1.eksctl.io does not exist in kubeconfig","time":"2025-08-21T20:44:44+05:30"}
-ranjiniganeshan@Ranjinis-MacBook-Pro guestbook-ui % argocd cluster add prod-argocd-cluster.ap-south-1.eksctl.io
 
 argocd cluster add ranjini@prod-argocd-cluster.ap-south-1.eksctl.io
 WARNING: This will create a service account `argocd-manager` on the cluster referenced by context `ranjini@prod-argocd-cluster.ap-south-1.eksctl.io` with full cluster level privileges. Do you want to continue [y/N]? y
@@ -1078,16 +1006,27 @@ WARNING: This will create a service account `argocd-manager` on the cluster refe
 {"level":"info","msg":"Created bearer token secret for ServiceAccount \"argocd-manager\"","time":"2025-08-21T20:45:35+05:30"}
 Cluster 'https://59A7267E233CC42B85C27324FB9E3379.gr7.ap-south-1.eks.amazonaws.com' added
 
-
-
-
 kubectl config use-context prod-cluster
-
-argocd cluster add prod-cluster
 
 argocd cluster list
 
 ```
+
+Add prod eks to dev argo cd 
+
+```
+argocd cluster add arn:aws:eks:ap-south-1:215959898119:cluster/prod3-argocd-cluster --name ranjini@prod3-argocd-cluster.ap-south-1.eksctl.io
+```
+
+kubectl apply -f https://github.com/udemykcloud/helm/blob/main/gitops-repo/environments/dev/application.yaml
+kubectl apply -f https://github.com/udemykcloud/helm/blob/main/gitops-repo/environments/prod/application.yaml
+
+* Access guestbook UI using the laodbalancer for dev and prod using dns prod.systemdesigns.xyz after configuring the cname.
+
+
+
+
+
 
 
 
