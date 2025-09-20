@@ -25,6 +25,8 @@ terraform -version
 
 ## EKS Cluster Creation
 
+1. create a file with below code
+
 ```
 
 
@@ -106,3 +108,14 @@ output "kubeconfig_command" {
 }
 
 ```
+2. Initiaize terraform
+
+```
+terraform init
+```
+3. Apply the changes
+
+```
+terraform apply
+```
+
