@@ -1,6 +1,7 @@
 # Canary Deployment
 
 ## If Argo CD  is not installed previously, please follow the below steps
+
 1. create namespace for argocd 
 
 ```
@@ -18,6 +19,8 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 4. access the default password to log in to argocd ui
 ```
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d; echo
+```
+
 
 ## Install Argo Roll out
 1.  create namespace for argo- rollouts
