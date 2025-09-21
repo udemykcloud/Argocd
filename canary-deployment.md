@@ -120,7 +120,6 @@ spec:
   project: default
   source:
     repoURL: https://github.com/udemykcloud/argo-rollout-guestbook-demo.git
-    path: guestbook-rollout
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
