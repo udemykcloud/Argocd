@@ -67,7 +67,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: guestbook-ui-canary
+  name: guestbook-ui-blue-green
   namespace: default
 spec:
   ports:
@@ -121,8 +121,35 @@ spec:
 ```
 
 2. apply the application.yaml
-
 ```
 kubectl apply -f application.yaml
 ```
+
+
+
+## Blue to green deployment
+
+1. Edit the file guestbook-rollout.yaml, change image: udemykcloud534/guestbook:green to image: udemykcloud534/guestbook:blue. commit the changes
+
+2. sync the application from UI
+
+3. Access the blue deployment. 
+
+```
+kubectl get ingress -A 
+```
+
+3. Perform Blue-Green Deployment. change service guestbook-ui to guestbook-ui-blue-green commit the changes
+```
+kubectl edit ingress guestbook-ui-ingress -n default 
+```
+
+
+4. promote the deployment
+
+```
+kubectl argo rollouts promote guestbook-ui -n default
+```
+
+
 
