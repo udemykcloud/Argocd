@@ -30,83 +30,133 @@ terraform -version
 ```
 
 
-terraform {
-  required_version = ">= 1.5.0"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
+# Configure the AWS provider
 provider "aws" {
   region = "us-east-1"
 }
 
-# Default VPC
+# Data source to fetch the default VPC
 data "aws_vpc" "default" {
   default = true
 }
 
-# Default subnets in VPC
+# Data source to fetch subnets in specific availability zones (us-east-1a and us-east-1b)
 data "aws_subnets" "default" {
   filter {
     name   = "vpc-id"
     values = [data.aws_vpc.default.id]
   }
-}
 
-# Subnet details (to get AZ info)
-data "aws_subnet" "details" {
-  for_each = toset(data.aws_subnets.default.ids)
-  id       = each.value
-}
-
-# Available AZs (take first 2 dynamically)
-data "aws_availability_zones" "available" {
-  state = "available"
-}
-
-locals {
-  # Pick the first 2 available AZs in the region
-  chosen_azs = slice(data.aws_availability_zones.available.names, 0, 2)
-
-  # Pick only subnets in those 2 AZs
-  selected_subnets = tolist([
-    for s in data.aws_subnet.details : s.id
-    if contains(local.chosen_azs, s.availability_zone)
-  ])
-}
-
-module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "~> 20.0"
-
-  cluster_name    = "demo-cluster"
-  cluster_version = "1.30"
-
-  vpc_id     = data.aws_vpc.default.id
-  subnet_ids = local.selected_subnets
-
-  eks_managed_node_groups = {
-    default = {
-      desired_size   = 2
-      min_size       = 2
-      max_size       = 2
-      instance_types = ["t3.medium"]
-    }
+  filter {
+    name   = "availability-zone"
+    values = ["us-east-1a", "us-east-1b"]
   }
 }
 
-# Get current region for kubeconfig output
-data "aws_region" "current" {}
+# Create IAM role for EKS cluster
+resource "aws_iam_role" "eks_cluster_role" {
+  name = "eks-cluster-role"
 
-output "kubeconfig_command" {
-  value = "aws eks update-kubeconfig --region ${data.aws_region.current.name} --name ${module.eks.cluster_name}"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "eks.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
 
+# Attach the AmazonEKSClusterPolicy to the EKS cluster role
+resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+  role       = aws_iam_role.eks_cluster_role.name
+}
+
+# Create the EKS cluster
+resource "aws_eks_cluster" "example" {
+  name     = "example-cluster"
+  role_arn = aws_iam_role.eks_cluster_role.arn
+
+  vpc_config {
+    subnet_ids = data.aws_subnets.default.ids
+  }
+
+  # Ensure that IAM role permissions are created before and deleted after EKS cluster handling
+  depends_on = [
+    aws_iam_role_policy_attachment.eks_cluster_policy
+  ]
+}
+
+# Create IAM role for EKS node group
+resource "aws_iam_role" "eks_node_group_role" {
+  name = "eks-node-group-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+# Attach policies to the node group role
+resource "aws_iam_role_policy_attachment" "eks_worker_node_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+  role       = aws_iam_role.eks_node_group_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+  role       = aws_iam_role.eks_node_group_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "ec2_container_registry_readonly" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.eks_node_group_role.name
+}
+
+# Create EKS node group
+resource "aws_eks_node_group" "example" {
+  cluster_name    = aws_eks_cluster.example.name
+  node_group_name = "example-node-group"
+  node_role_arn   = aws_iam_role.eks_node_group_role.arn
+  subnet_ids      = data.aws_subnets.default.ids
+
+  scaling_config {
+    desired_size = 2
+    max_size     = 3
+    min_size     = 1
+  }
+
+  instance_types = ["t3.medium"]
+
+  depends_on = [
+    aws_iam_role_policy_attachment.eks_worker_node_policy,
+    aws_iam_role_policy_attachment.eks_cni_policy,
+    aws_iam_role_policy_attachment.ec2_container_registry_readonly
+  ]
+}
+
+# Output the EKS cluster endpoint
+output "cluster_endpoint" {
+  value = aws_eks_cluster.example.endpoint
+}
+
+# Output the cluster name
+output "cluster_name" {
+  value = aws_eks_cluster.example.name
+}
 ```
 2. Initiaize terraform
 
