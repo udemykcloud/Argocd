@@ -12,7 +12,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 ```
 2. Create a repositry name argo-rollout-guestbook-blue-green and clone it into local
 
-3. Create a file name guestbook-rollout.yaml with the below code
+3. Create a file name guestbook-rollout.yaml with ** guestbook-rollout folder ** with the below code
 
 ```
 apiVersion: argoproj.io/v1alpha1
@@ -119,3 +119,10 @@ spec:
   syncPolicy:
     automated: {}
 ```
+
+2. apply the application.yaml
+
+```
+kubectl apply -f application.yaml
+```
+
