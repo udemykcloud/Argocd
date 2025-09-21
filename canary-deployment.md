@@ -14,7 +14,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 ## create argo rollout yaml file
 
 1. Create a repositry name guestbook-rollout and clone it into local
-2. Create a file name guestbook-rollout.yaml  within a folder named ## guestbook-rollout with the below code
+2. Create a file name guestbook-rollout.yaml  within a folder named ** guestbook-rollout **  with the below code
 ```
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
