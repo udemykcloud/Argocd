@@ -38,6 +38,10 @@ sudo mv kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
 sudo chmod +x /usr/local/bin/kubectl-argo-rollouts
 ```
 
+## Install Ingress controller
+```
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.10.0/deploy/static/provider/aws/deploy.yaml
+```
 ## create application
 
 1. create a file named application.yaml
