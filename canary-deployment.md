@@ -140,7 +140,7 @@ spec:
 
 ## create application
 
-1. create a file named application.yaml
+1. create a file named application.yaml and make sure to verify repoURL matches the repositry which you cloned above.
 
 ```
 apiVersion: argoproj.io/v1alpha1
