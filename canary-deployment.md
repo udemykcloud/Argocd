@@ -38,6 +38,40 @@ sudo mv kubectl-argo-rollouts-linux-amd64 /usr/local/bin/kubectl-argo-rollouts
 sudo chmod +x /usr/local/bin/kubectl-argo-rollouts
 ```
 
+## create application
+
+1. create a file named application.yaml
+
+```
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook-rollout
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/udemykcloud/argo-rollout-guestbook-demo.git
+    path: guestbook-rollout
+    targetRevision: HEAD
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated: {}
+```
+2. apply the application.yaml 
+
+```
+kubectl apply -f application.yaml
+```
+3. Access the loadbalancer dns
+
+```
+kubectl get ingress -A
+```
+
+
 
 
 
