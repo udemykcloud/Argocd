@@ -79,7 +79,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
 
 # Create the EKS cluster
 resource "aws_eks_cluster" "example" {
-  name     = "example-cluster"
+  name     = "argocd-cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
 
   vpc_config {
@@ -166,6 +166,12 @@ terraform init
 3. Apply the changes
 
 ```
-terraform apply
+terraform apply -auto-approve
 ```
+4. verify if EKS cluster is created
+```
+aws eks update-kubeconfig --region us-east-1 --name argocd-cluster
+kubectl get nodes -A
+```
+
 
