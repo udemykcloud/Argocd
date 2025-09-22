@@ -13,7 +13,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 
 ## create argo rollout yaml file
 
-1. Create a repositry name guestbook-rollout and clone it into local
+1. Create a repositry name argo-rollout-canary and clone it into local
 2. Create a file name guestbook-rollout.yaml  within a folder named ** guestbook-rollout **  with the below code
 ```
 apiVersion: argoproj.io/v1alpha1
@@ -43,8 +43,6 @@ spec:
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
-          imagePullSecrets:
-            - name: dockerhub-secret
   strategy:
     canary:
       steps:
@@ -119,13 +117,15 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/udemykcloud/argo-rollout-guestbook-demo.git
+    repoURL: https://github.com/udemykcloud/argo-rollout-canary.git
+    path: guestbook-rollout
     targetRevision: HEAD
   destination:
     server: https://kubernetes.default.svc
     namespace: default
   syncPolicy:
     automated: {}
+
 ```
 2. apply the application.yaml 
 
