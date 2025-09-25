@@ -127,16 +127,6 @@ spec:
     automated: {}
 
 ```
-2. apply the application.yaml 
-
-```
-kubectl apply -f application.yaml
-```
-3. Access the loadbalancer dns
-
-```
-kubectl get ingress -A
-```
 ## Modify the guestbook-rollout.yaml for deploying the version for the docker image.
 
 1. Edit the file guestbook-rollout.yaml, change image: udemykcloud534/guestbook:green to image: udemykcloud534/guestbook:blue
@@ -147,10 +137,18 @@ git commit -m "blue deployment"
 git push
 ```
 
-3.  Access the loadbalancer dns
+
+3. apply the application.yaml 
+
 ```
-kubectl get ingress -A 
+kubectl apply -f application.yaml
 ```
+3. Access the loadbalancer dns
+
+```
+kubectl get ingress -A
+```
+
 
 
 
