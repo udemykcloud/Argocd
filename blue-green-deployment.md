@@ -43,8 +43,6 @@ spec:
               port: 8080
             initialDelaySeconds: 5
             periodSeconds: 10
-          imagePullSecrets:
-            - name: dockerhub-secret
   strategy:
     blueGreen:
       activeService: guestbook-ui
