@@ -12,40 +12,95 @@ It lets you **reuse your base manifests** and create **overlays** for environmen
 Suppose you already have the following files:
 
 ```yaml
-# deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
+# base/guestbook-rollout.yaml
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
-  name: myapp
+  name: guestbook-ui
 spec:
-  replicas: 1
+  replicas: 3
+  revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: myapp
+      app: guestbook-ui
   template:
     metadata:
       labels:
-        app: myapp
+        app: guestbook-ui
     spec:
       containers:
-      - name: myapp
-        image: myapp:latest
-        ports:
-        - containerPort: 80
+        - name: guestbook-ui
+          image: udemykcloud534/guestbook:green
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          imagePullSecrets:
+            - name: dockerhub-secret
+  strategy:
+    blueGreen:
+      activeService: guestbook-ui
+      previewService: guestbook-ui-canary
+      autoPromotionEnabled: true
+      scaleDownDelaySeconds: 300
 ```
 
 ```yaml
-# service.yaml
+# base/guestbook-ui-svc.yaml
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: myapp
+  name: guestbook-ui
+  namespace: default
 spec:
-  selector:
-    app: myapp
   ports:
-  - port: 80
-    targetPort: 80
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: guestbook-ui
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: guestbook-ui-canary
+  namespace: default
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: guestbook-ui
+```
+
+```yaml
+# base/guestbook-ingress.yaml
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: guestbook-ui-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: guestbook-ui
+                port:
+                  number: 80
 ```
 
 ---
@@ -57,17 +112,20 @@ Move your original manifests into a `base/` folder.
 ```
 kustomize-demo/
 ├── base/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── kustomization.yaml
+│   ├── guestbook-ui-svc.yaml
+│   ├── guestbook-rollout.yaml
+│   └── guestbook-ingress.yaml
 ```
 
 Inside `base/kustomization.yaml`:
 
 ```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 resources:
-  - deployment.yaml
-  - service.yaml
+- guestbook-ui-svc.yaml
+- guestbook-rollout.yaml
+- guestbook-ingress.yaml
 ```
 
 This defines the **base configuration** shared across all environments.
@@ -99,25 +157,77 @@ Each overlay will **reference the base** and apply changes.
 ### Example: Dev Overlay
 
 ```yaml
-# overlays/dev/kustomization.yaml
-bases:
-  - ../../base
+# overlays/staging/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 
 namePrefix: dev-
+namespace: dev
 
-patchesStrategicMerge:
-  - patch-replicas.yaml
+resources:
+- ../../base
+
+images:
+- name: udemykcloud534/guestbook
+  newName: udemykcloud534/guestbook
+  newTag: blue
+
+patches:
+  # Inline replica patch
+  - target:
+      kind: Rollout
+      name: guestbook-ui
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+
+  # Inline rollout service names patch
+  - target:
+      kind: Rollout
+      name: guestbook-ui
+    patch: |-
+      - op: replace
+        path: /spec/strategy/blueGreen
+        value:
+          activeService: dev-guestbook-ui
+          previewService: dev-guestbook-ui-canary
+          autoPromotionEnabled: false
+          autoPromotionSeconds: 30
+          scaleDownDelaySeconds: 10
+
+  # Inline ingress patch
+  - target:
+      kind: Ingress
+      name: guestbook-ui-ingress
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/rewrite-target: /$2
+      - op: replace
+        path: /spec/rules
+        value:
+          - host: guestbook.local
+            http:
+              paths:
+                - path: /dev(/|$)(.*)
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: dev-guestbook-ui
+                      port:
+                        number: 80
+                - path: /dev-preview(/|$)(.*)
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: dev-guestbook-ui-canary
+                      port:
+                        number: 80
 ```
 
-```yaml
-# overlays/dev/patch-replicas.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: myapp
-spec:
-  replicas: 1
-```
 
 ---
 
@@ -125,39 +235,76 @@ spec:
 
 ```yaml
 # overlays/staging/kustomization.yaml
-bases:
-  - ../../base
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 
-namePrefix: staging-
+namePrefix: stg-
+namespace: stg
 
-patchesStrategicMerge:
-  - patch-replicas.yaml
-  - patch-image.yaml
+resources:
+- ../../base
+
+images:
+- name: udemykcloud534/guestbook
+  newName: udemykcloud534/guestbook
+  newTag: yellow
+
+patches:
+  # Inline replica patch
+  - target:
+      kind: Rollout
+      name: guestbook-ui
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+
+  # Inline rollout service names patch
+  - target:
+      kind: Rollout
+      name: guestbook-ui
+    patch: |-
+      - op: replace
+        path: /spec/strategy/blueGreen
+        value:
+          activeService: stg-guestbook-ui
+          previewService: stg-guestbook-ui-canary
+          autoPromotionEnabled: false
+          autoPromotionSeconds: 30
+          scaleDownDelaySeconds: 10
+
+  # Inline ingress patch
+  - target:
+      kind: Ingress
+      name: guestbook-ui-ingress
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/rewrite-target: /$2
+      - op: replace
+        path: /spec/rules
+        value:
+          - host: guestbook.local
+            http:
+              paths:
+                - path: /stg(/|$)(.*)
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: stg-guestbook-ui
+                      port:
+                        number: 80
+                - path: /stg-preview(/|$)(.*)
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: stg-guestbook-ui-canary
+                      port:
+                        number: 80
 ```
 
-```yaml
-# overlays/staging/patch-replicas.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: myapp
-spec:
-  replicas: 2
-```
-
-```yaml
-# overlays/staging/patch-image.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: myapp
-spec:
-  template:
-    spec:
-      containers:
-      - name: myapp
-        image: myapp:staging
-```
 
 ---
 
@@ -165,43 +312,95 @@ spec:
 
 ```yaml
 # overlays/prod/kustomization.yaml
-bases:
-  - ../../base
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
 
 namePrefix: prod-
+namespace: prod
 
-patchesStrategicMerge:
-  - patch-replicas.yaml
-  - patch-image.yaml
+resources:
+- ../../base
+
+images:
+- name: udemykcloud534/guestbook
+  newName: udemykcloud534/guestbook
+  newTag: green
+
+patches:
+  # Inline replica patch
+  - target:
+      kind: Rollout
+      name: guestbook-ui
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+
+  # Inline rollout service names patch
+  - target:
+      kind: Rollout
+      name: guestbook-ui
+    patch: |-
+      - op: replace
+        path: /spec/strategy/blueGreen
+        value:
+          activeService: prod-guestbook-ui
+          previewService: prod-guestbook-ui-canary
+          autoPromotionEnabled: false
+          autoPromotionSeconds: 30
+          scaleDownDelaySeconds: 10
+
+  # Inline ingress patch
+  - target:
+      kind: Ingress
+      name: guestbook-ui-ingress
+    patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          kubernetes.io/ingress.class: nginx
+          nginx.ingress.kubernetes.io/rewrite-target: /$2
+      - op: replace
+        path: /spec/rules
+        value:
+          - host: guestbook.local
+            http:
+              paths:
+                - path: /prod(/|$)(.*)
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: prod-guestbook-ui
+                      port:
+                        number: 80
+                - path: /prod-preview(/|$)(.*)
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: prod-guestbook-ui-canary
+                      port:
+                        number: 80
 ```
 
-```yaml
-# overlays/prod/patch-replicas.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: myapp
-spec:
-  replicas: 5
-```
-
-```yaml
-# overlays/prod/patch-image.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: myapp
-spec:
-  template:
-    spec:
-      containers:
-      - name: myapp
-        image: myapp:stable
-```
 
 ---
 
-## Step 5: Deploy Using Kustomize
+## Step 5: Build Using Kustomize
+
+To build and verify the final Kubernetes manifest file which is going to be applied:
+
+```bash
+# Dev
+kustomize build overlays/dev
+
+# Staging
+kustomize build overlays/staging
+
+# Prod
+kustomize build overlays/prod
+```
+
+## Step 6: Deploy Using Kustomize
 
 To apply each environment:
 
