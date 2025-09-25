@@ -399,6 +399,7 @@ kubectl kustomize overlays/staging
 # Prod
 kubectl kustomize overlays/prod
 ```
+---
 
 ## Step 6: Deploy Using Kustomize (Manually)
 
@@ -414,6 +415,7 @@ kubectl apply -k overlays/staging
 # Prod
 kubectl apply -k overlays/prod
 ```
+---
 
 ## Step 7: Deploy with Kustomize Using ArgoCD
 
@@ -421,7 +423,6 @@ Kustomize integrates seamlessly with **ArgoCD**, making it easy to manage multip
 
 Instead of applying overlays manually with `kubectl apply -k`, you can create an **ArgoCD Application** that points directly to the environment overlay directory.
 
----
 
 ### Example: Staging Environment with ArgoCD
 
@@ -449,9 +450,10 @@ spec:
     automated:
       prune: true
       selfHeal: true
----
+```
 
 ### Example: Production Environment with ArgoCD
+
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
