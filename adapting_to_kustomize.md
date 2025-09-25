@@ -400,7 +400,7 @@ kubectl kustomize overlays/staging
 kubectl kustomize overlays/prod
 ```
 
-## Step 6: Deploy Using Kustomize
+## Step 6: Deploy Using Kustomize (Manually)
 
 To apply each environment:
 
@@ -414,6 +414,79 @@ kubectl apply -k overlays/staging
 # Prod
 kubectl apply -k overlays/prod
 ```
+
+## Step 7: Deploy with Kustomize Using ArgoCD
+
+Kustomize integrates seamlessly with **ArgoCD**, making it easy to manage multiple environments using GitOps.  
+
+Instead of applying overlays manually with `kubectl apply -k`, you can create an **ArgoCD Application** that points directly to the environment overlay directory.
+
+---
+
+### Example: Staging Environment with ArgoCD
+
+Here is a sample `application.yaml` for **staging**:
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook-staging
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/your-org/guestbook-kustomize.git   # 👈 your Git repo
+    targetRevision: main                                           # 👈 branch or tag
+    path: overlays/staging                                         # 👈 points to staging overlay
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: stg
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+
+### Example: Production Environment with ArgoCD
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook-prod
+  namespace: argocd
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/your-org/guestbook-kustomize.git
+    targetRevision: main
+    path: overlays/prod            # 👈 points to prod overlay
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+```
+
+### Key Points
+
+- The path in the Application spec must point to the correct overlay directory (overlays/dev, overlays/staging, overlays/prod).
+- ArgoCD automatically runs kustomize build internally on that path before applying.
+- This ensures each environment has its own configuration without duplication.
+
+### Workflow
+
+- Commit your changes (base + overlays) to Git.
+- Create an ArgoCD Application for each environment (dev, staging, prod).
+- ArgoCD continuously monitors your repo and syncs the right overlay to the right cluster/namespace.
 
 ---
 
