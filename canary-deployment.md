@@ -133,7 +133,7 @@ spec:
 2. commit the changes to github
 ```
 git add .
-git commit -m "blue deployment"
+git commit -m "canary deployment"
 git push
 ```
 
