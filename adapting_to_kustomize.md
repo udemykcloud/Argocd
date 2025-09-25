@@ -391,13 +391,13 @@ To build and verify the final Kubernetes manifest file which is going to be appl
 
 ```bash
 # Dev
-kustomize build overlays/dev
+kubectl kustomize overlays/dev
 
 # Staging
-kustomize build overlays/staging
+kubectl kustomize overlays/staging
 
 # Prod
-kustomize build overlays/prod
+kubectl kustomize overlays/prod
 ```
 
 ## Step 6: Deploy Using Kustomize
