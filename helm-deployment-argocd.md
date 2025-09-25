@@ -14,5 +14,19 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 
 ## create argo rollout yaml file
 
-1. Create a repositry name argo-rollout-canary and clone it into local
-2. Create a file name guestbook-rollout.yaml  within a folder named ** guestbook-rollout **  with the below code
+1. Clone the repo
+```
+https://github.com/udemykcloud/helm.git
+```
+2. create namespace
+```
+kubectl create namespace dev
+```
+3. deploy the guestbook app using helm
+```
+kubectl apply -f helm/blob/main/gitops-repo/environments/dev/application.yaml
+```
+4. Access the guestbook-UI using the loadbalancer UI from the browser
+```
+kubectl get ingress -A 
+```
