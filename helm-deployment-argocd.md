@@ -34,8 +34,7 @@ kubectl get ingress -A
 ## Deploying the guestbook-UI app on production cluster using  helm charts and argocd 
 
 1. spin eks cluster called prod-argocd
-
-   ```
+```
 # Configure the AWS provider
 provider "aws" {
   region = "us-east-1"
