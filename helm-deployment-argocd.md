@@ -85,7 +85,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
 
 # Create the EKS cluster
 resource "aws_eks_cluster" "example" {
-  name     = "prod-cluster"
+  name     = "argocd-cluster"
   role_arn = aws_iam_role.eks_cluster_role.arn
 
   vpc_config {
