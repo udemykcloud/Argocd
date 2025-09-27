@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: moderator
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: moderator
+  template:
+    metadata:
+      labels:
+        app: moderator
+    spec:
+      containers:
+        - name: moderator
+          image: udemykcloud534/moderator:green   # <-- update tag as needed
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /health   # Moderator exposes /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      imagePullSecrets:
+        - name: dockerhub-secret
+  strategy:
+    blueGreen:
+      activeService: moderator
+      previewService: moderator-canary
+      autoPromotionEnabled: true
+      scaleDownDelaySeconds: 300
