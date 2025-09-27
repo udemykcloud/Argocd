@@ -30,4 +30,14 @@ patches:
           autoPromotionEnabled: false
           autoPromotionSeconds: 30
           scaleDownDelaySeconds: 10
+  
+  - target:
+      kind: Rollout
+      name: moderator
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/env
+        value:
+          - name: MODERATOR_URL
+            value: "http://stg-moderator:8080"
 
