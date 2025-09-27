@@ -9,9 +9,9 @@ spec:
   ports:
     - port: 8080
       targetPort: 8080
-  type: ClusterIP
+  type: ClusterIP   # ✅ this line is correctly indented
 
-  ---
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -21,4 +21,4 @@ spec:
     app: moderator
   ports:
     - port: 8080
-      targetPort: 8080
+      targetPort: 8080   # ❌ if there's a stray space or tab here, YAML breaks
