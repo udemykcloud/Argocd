@@ -7,10 +7,6 @@ namespace: prod
 resources:
 - ../../base
 
-images:
-- name: udemykcloud534/guestbook
-  newName: udemykcloud534/guestbook
-  newTag: green
 
 patches:
   # Inline replica patch
