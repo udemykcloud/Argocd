@@ -6,4 +6,4 @@ resources:
 images:
 - name: udemykcloud534/moderator
   newName: udemykcloud534/moderator
-  newTag: staging-b68bef80b7d39e6f1c2bb03e61d35cedbf1bb7d9
+  newTag: staging-4ad95226f7c1fb4ff1532e01c0aa44f31cc7a2a7
