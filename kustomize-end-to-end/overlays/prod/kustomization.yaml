@@ -7,62 +7,14 @@ namespace: prod
 resources:
 - ../../base
 
+patches:
+- path: replicas.yaml
+- path: rollout-service-names-patch.yaml
+- path: ingress-patch.yaml
+  target:
+    kind: Ingress
+    name: guestbook-ui-ingress
 images:
 - name: udemykcloud534/guestbook
   newName: udemykcloud534/guestbook
   newTag: green
-
-patches:
-  # Inline replica patch
-  - target:
-      kind: Rollout
-      name: guestbook-ui
-    patch: |-
-      - op: replace
-        path: /spec/replicas
-        value: 2
-
-  # Inline rollout service names patch
-  - target:
-      kind: Rollout
-      name: guestbook-ui
-    patch: |-
-      - op: replace
-        path: /spec/strategy/blueGreen
-        value:
-          activeService: prod-guestbook-ui
-          previewService: prod-guestbook-ui-canary
-          autoPromotionEnabled: false
-          autoPromotionSeconds: 30
-          scaleDownDelaySeconds: 10
-
-  # Inline ingress patch
-  - target:
-      kind: Ingress
-      name: guestbook-ui-ingress
-    patch: |-
-      - op: add
-        path: /metadata/annotations
-        value:
-          kubernetes.io/ingress.class: nginx
-          nginx.ingress.kubernetes.io/rewrite-target: /$2
-      - op: replace
-        path: /spec/rules
-        value:
-          - host: guestbook.local
-            http:
-              paths:
-                - path: /prod(/|$)(.*)
-                  pathType: Prefix
-                  backend:
-                    service:
-                      name: prod-guestbook-ui
-                      port:
-                        number: 80
-                - path: /prod-preview(/|$)(.*)
-                  pathType: Prefix
-                  backend:
-                    service:
-                      name: prod-guestbook-ui-canary
-                      port:
-                        number: 80

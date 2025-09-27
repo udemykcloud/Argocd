@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: guestbook-appset
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: dev
+            cluster: in-cluster # dev-cluster / staging-cluster / prod-cluster
+            namespace: dev
+            path: argo-iu-argo-events/overlays/dev
+          - env: staging
+            cluster: in-cluster
+            namespace: staging
+            path: argo-iu-argo-events/overlays/staging
+          - env: prod
+            cluster: in-cluster
+            namespace: prod
+            path: argo-iu-argo-events/overlays/prod
+  template:
+    metadata:
+      name: guestbook-{{env}}
+    spec:
+      project: guestbook
+      source:
+        repoURL: 'https://github.com/udemykcloud/Argocd.git'
+        targetRevision: main
+        path: "{{path}}"
+      destination:
+        name: "{{cluster}}"        # dev-cluster / staging-cluster / prod-cluster
+        namespace: "{{namespace}}"
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
