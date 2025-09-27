@@ -4,3 +4,7 @@ resources:
 - guestbook-ui-svc.yaml
 - guestbook-rollout.yaml
 - guestbook-ingress.yaml
+images:
+- name: udemykcloud534/guestbook
+  newName: udemykcloud534/guestbook
+  newTag: sha-eb4bccc
