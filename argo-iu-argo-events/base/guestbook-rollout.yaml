@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: guestbook-ui
+spec:
+  replicas: 3
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: guestbook-ui
+  template:
+    metadata:
+      labels:
+        app: guestbook-ui
+    spec:
+      containers:
+        - name: guestbook-ui
+          image: udemykcloud534/guestbook:green
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          imagePullSecrets:
+            - name: dockerhub-secret
+  strategy:
+    blueGreen:
+      activeService: guestbook-ui
+      previewService: guestbook-ui-canary
+      autoPromotionEnabled: true
+      scaleDownDelaySeconds: 300

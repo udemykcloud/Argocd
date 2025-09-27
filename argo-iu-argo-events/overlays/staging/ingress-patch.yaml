@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: guestbook-ui-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - host: guestbook.local      # 👈 your local domain name
+      http:
+        paths:
+          # Live (active) service
+          - path: /stg(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: stg-guestbook-ui
+                port:
+                  number: 80
+
+          # Preview (canary) service
+          - path: /stg-preview(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: stg-guestbook-ui-canary
+                port:
+                  number: 80
