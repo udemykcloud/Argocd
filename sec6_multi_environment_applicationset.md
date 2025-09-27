@@ -11,6 +11,7 @@ argocd cluster add staging-cluster-context --name staging-cluster
 # prod
 argocd cluster add prod-cluster-context --name prod-cluster
 ```
+Here I have used same cluster for multiple environments
 
 ## Repo structure
 ```
@@ -65,31 +66,31 @@ appset.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: serviceA-appset
+  name: guestbook-appset
   namespace: argocd
 spec:
   generators:
     - list:
         elements:
           - env: dev
-            cluster: dev-cluster
+            cluster: in-cluster # dev-cluster / staging-cluster / prod-cluster
             namespace: dev
-            path: serviceA/overlays/dev
+            path: argo-iu-argo-events/overlays/dev
           - env: staging
-            cluster: staging-cluster
+            cluster: in-cluster
             namespace: staging
-            path: serviceA/overlays/staging
+            path: argo-iu-argo-events/overlays/staging
           - env: prod
-            cluster: prod-cluster
+            cluster: in-cluster
             namespace: prod
-            path: serviceA/overlays/prod
+            path: argo-iu-argo-events/overlays/prod
   template:
     metadata:
-      name: recommendationservice-{{env}}
+      name: guestbook-{{env}}
     spec:
-      project: default
+      project: guestbook
       source:
-        repoURL: https://github.com/org/gitops-repo.git
+        repoURL: 'https://github.com/udemykcloud/Argocd.git'
         targetRevision: main
         path: "{{path}}"
       destination:
@@ -99,6 +100,13 @@ spec:
         automated:
           prune: true
           selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
 ```
 
+```
+$ kubectl get applicationset -n argocd
+NAME               AGE
+guestbook-appset   7m43s
+```
 

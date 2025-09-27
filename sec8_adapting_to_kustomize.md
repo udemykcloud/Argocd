@@ -167,11 +167,6 @@ namespace: dev
 resources:
 - ../../base
 
-images:
-- name: udemykcloud534/guestbook
-  newName: udemykcloud534/guestbook
-  newTag: blue
-
 patches:
   # Inline replica patch
   - target:
@@ -244,11 +239,6 @@ namespace: stg
 resources:
 - ../../base
 
-images:
-- name: udemykcloud534/guestbook
-  newName: udemykcloud534/guestbook
-  newTag: yellow
-
 patches:
   # Inline replica patch
   - target:
@@ -320,11 +310,6 @@ namespace: prod
 
 resources:
 - ../../base
-
-images:
-- name: udemykcloud534/guestbook
-  newName: udemykcloud534/guestbook
-  newTag: green
 
 patches:
   # Inline replica patch
