@@ -1,0 +1,12 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: guestbook-ui
+spec:
+  strategy:
+    blueGreen:
+      activeService: stg-guestbook-ui
+      previewService: stg-guestbook-ui-canary
+      autoPromotionEnabled: false   # 👈 ensure QAs must test first
+      autoPromotionSeconds: 30      # (optional) auto-promote after X seconds
+      scaleDownDelaySeconds: 10     # delete preview pods after 10 secs of promotion
