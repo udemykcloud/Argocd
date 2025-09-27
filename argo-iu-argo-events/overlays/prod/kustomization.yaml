@@ -7,10 +7,6 @@ namespace: prod
 resources:
 - ../../base
 
-images:
-- name: udemykcloud534/guestbook
-  newName: udemykcloud534/guestbook
-  newTag: green
 
 patches:
   # Inline replica patch
@@ -66,3 +62,13 @@ patches:
                       name: prod-guestbook-ui-canary
                       port:
                         number: 80
+
+  - target:
+      kind: Rollout
+      name: guestbook-ui
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/env
+        value:
+          - name: MODERATOR_URL
+            value: "http://prod-moderator:8080"

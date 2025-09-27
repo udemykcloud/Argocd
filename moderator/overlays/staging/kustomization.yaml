@@ -1,0 +1,43 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namePrefix: stg-
+namespace: stg
+
+resources:
+- ../../base
+
+patches:
+  # Inline replica patch
+  - target:
+      kind: Rollout
+      name: moderator
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+
+  # Inline rollout service names patch
+  - target:
+      kind: Rollout
+      name: moderator
+    patch: |-
+      - op: replace
+        path: /spec/strategy/blueGreen
+        value:
+          activeService: stg-moderator
+          previewService: stg-moderator-canary
+          autoPromotionEnabled: false
+          autoPromotionSeconds: 30
+          scaleDownDelaySeconds: 10
+  
+  - target:
+      kind: Rollout
+      name: moderator
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/env
+        value:
+          - name: MODERATOR_URL
+            value: "http://stg-moderator:8080"
+
