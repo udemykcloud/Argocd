@@ -108,7 +108,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/udemykcloud/argo-rollout-guestbook-demo.git
+    repoURL: https://github.com/udemykcloud/argo-rollout-guestbook-blue-green.git
     path: guestbook-rollout
     targetRevision: HEAD
   destination:
