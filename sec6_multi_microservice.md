@@ -1,3 +1,7 @@
+There is a second moderator service which is integrated with guestbook application. After en entry is posted in the guestbook application, moderator service will analyse the strings in the message and redact the message if any.
+
+Create its staging application
+```
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -28,3 +32,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+```
