@@ -7,4 +7,4 @@ resources:
 images:
 - name: udemykcloud534/guestbook
   newName: udemykcloud534/guestbook
-  newTag: sha-70c526b
+  newTag: prod-20250927-102027-7b8ef1f
