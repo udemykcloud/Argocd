@@ -3,7 +3,3 @@ kind: Kustomization
 resources:
 - moderator-rollout.yaml
 - moderator-svc.yaml
-images:
-- name: udemykcloud534/moderator
-  newName: udemykcloud534/moderator
-  newTag: staging-4ad95226f7c1fb4ff1532e01c0aa44f31cc7a2a7
