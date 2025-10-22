@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: guestbook
+  namespace: argocd
+spec:
+  description: Project for test repo with all namespaced resources allowed
+  sourceRepos:
+    - https://github.com/chandika-s/argocd-multi-cluster-demo.git
+  destinations:
+  - namespace: guestbook-dev
+    server: https://4860181E435B443E02694E312DC7BB1F.gr7.us-east-1.eks.amazonaws.com
+  - namespace: guestbook-prod
+    server: https://F26B27FD28B211C98E147F1B3B4635BF.gr7.ap-south-1.eks.amazonaws.com
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: "*"
+      kind: "*"

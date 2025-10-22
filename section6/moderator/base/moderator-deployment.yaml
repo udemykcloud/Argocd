@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moderator
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: moderator
+  template:
+    metadata:
+      labels:
+        app: moderator
+    spec:
+      containers:
+        - image: udemykcloud534/moderator:green
+          name: moderator
+          ports:
+            - containerPort: 80

@@ -1,0 +1,21 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook
+  namespace: argocd
+spec:
+  project: guestbook
+  source:
+    repoURL: 'https://github.com/udemykcloud/Argocd.git'
+    targetRevision: main
+    path: section6/guestbook/base
+  destination:
+    server: https://CA28808FF985FFC343B5FD8D46805906.gr7.us-east-1.eks.amazonaws.com
+    namespace: stg
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

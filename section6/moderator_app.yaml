@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: moderator
+  namespace: argocd
+spec:
+  project: guestbook
+  source:
+    repoURL: 'https://github.com/udemykcloud/Argocd.git'
+    targetRevision: main  
+    path: section6/moderator/base
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: stg
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

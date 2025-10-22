@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook-dev
+  namespace: argocd
+spec:
+  project: guestbook
+  source:
+    repoURL: 'https://github.com/chandika-s/argocd-multi-cluster-demo.git'
+    targetRevision: main     
+    path: dev  # where dev k8s manifests available
+  destination:
+    server: https://4860181E435B443E02694E312DC7BB1F.gr7.us-east-1.eks.amazonaws.com  # 👈 from argocd cluster list
+    namespace: guestbook-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
