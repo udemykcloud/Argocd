@@ -10,7 +10,7 @@ spec:
     targetRevision: main  
     path: section6/moderator/base
   destination:
-    server: https://kubernetes.default.svc
+    server: https://D2E6AF0030498F0D3E430969326C2440.yl4.ap-south-1.eks.amazonaws.com
     namespace: stg
   syncPolicy:
     automated:
