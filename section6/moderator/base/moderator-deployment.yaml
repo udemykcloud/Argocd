@@ -14,7 +14,7 @@ spec:
         app: moderator
     spec:
       containers:
-        - image: udemykcloud534/moderator:green
+        - image: udemykcloud534/moderator:staging-4ad95226f7c1fb4ff1532e01c0aa44f31cc7a2a7
           name: moderator
           ports:
             - containerPort: 80

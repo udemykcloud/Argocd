@@ -375,7 +375,7 @@ spec:
       kind: "*"
 ```
 
-Guestbook Argo Application:
+Guestbook Argo Application deploy into cluster1:
 ```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -399,7 +399,7 @@ spec:
       - CreateNamespace=true
 ```
 
-Moderator Argo Application:
+Moderator Argo Application deploy into cluster2:
 ```
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -413,7 +413,7 @@ spec:
     targetRevision: main  
     path: section6/moderator/base
   destination:
-    server: https://kubernetes.default.svc
+    server: https://D2E6AF0030498F0D3E430969326C2440.yl4.ap-south-1.eks.amazonaws.com
     namespace: stg
   syncPolicy:
     automated:
