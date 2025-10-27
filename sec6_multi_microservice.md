@@ -1,38 +1,3 @@
-There is a second moderator service which is integrated with guestbook application. After en entry is posted in the guestbook application, moderator service will analyse the strings in the message and redact the message if any.
-
-Create its staging application
-```
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: moderator-stg
-  namespace: argocd
-  annotations:
-    argocd-image-updater.argoproj.io/git-branch: staging
-    argocd-image-updater.argoproj.io/image-list: myimage=udemykcloud534/moderator  
-    argocd-image-updater.argoproj.io/myimage.allow-tags: regexp:.*
-    argocd-image-updater.argoproj.io/myimage.ignore-tags: latest, dev
-    argocd-image-updater.argoproj.io/myimage.update-strategy: newest-build
-    argocd-image-updater.argoproj.io/myimage.kustomize.image-name: udemykcloud534/moderator 
-    argocd-image-updater.argoproj.io/myimage.force-update: "true"
-    argocd-image-updater.argoproj.io/write-back-method: git:secret:argocd/git-creds
-    argocd-image-updater.argoproj.io/write-back-target: "kustomization:../../base"
-spec:
-  project: guestbook
-  source:
-    repoURL: 'https://github.com/udemykcloud/Argocd.git'
-    targetRevision: staging      # Branch for staging
-    path: moderator/overlays/staging
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: stg
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-```
 
 Cluster creation
 ```yaml
@@ -345,7 +310,8 @@ argocd cluster add cluster2
 Application creation:
 
 Create Project:
-```
+
+```yaml
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -355,21 +321,17 @@ spec:
   description: Project for test repo with all clusters and namespaces allowed
   sourceRepos:
     - https://github.com/udemykcloud/Argocd.git
-
   destinations:
     # ✅ Cluster1 (us-east-1)
     - namespace: '*'
       server: https://CA28808FF985FFC343B5FD8D46805906.gr7.us-east-1.eks.amazonaws.com
-
     # ✅ Cluster2 (ap-south-1)
     - namespace: '*'
       server: https://D2E6AF0030498F0D3E430969326C2440.yl4.ap-south-1.eks.amazonaws.com
-
   # Allow creating Namespaces and all namespaced resources
   clusterResourceWhitelist:
     - group: ""
       kind: Namespace
-
   namespaceResourceWhitelist:
     - group: "*"
       kind: "*"
