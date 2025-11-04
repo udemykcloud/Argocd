@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "guestbook-ui.fullname" . }}
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: {{ include "guestbook-ui.name" . }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "guestbook-ui.fullname" . }}-canary
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: {{ include "guestbook-ui.name" . }}

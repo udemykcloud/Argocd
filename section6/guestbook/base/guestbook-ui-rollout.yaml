@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: guestbook-ui
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: guestbook-ui
+  template:
+    metadata:
+      labels:
+        app: guestbook-ui
+    spec:
+      containers:
+        - name: guestbook-ui
+          image: udemykcloud534/guestbook:green
+          ports:
+            - containerPort: 80
+
+  strategy:
+    canary:
+      stableService: guestbook-ui
+      canaryService: guestbook-ui-canary
+      # Number of pods updated in the first step (percentage or count)
+      steps:
+        - setWeight: 50     # Send 50% of traffic to new version
+        - pause: { duration: 30s } # Wait and observe
+        - setWeight: 100    # Move all traffic to new version

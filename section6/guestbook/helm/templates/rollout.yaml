@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ include "guestbook-ui.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: {{ include "guestbook-ui.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "guestbook-ui.name" . }}
+    spec:
+      containers:
+        - name: {{ include "guestbook-ui.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: 80
+  strategy:
+    canary:
+      stableService: {{ include "guestbook-ui.fullname" . }}
+      canaryService: {{ include "guestbook-ui.fullname" . }}-canary
+      steps:
+        - setWeight: 50
+        - pause: { duration: 30s }
+        - setWeight: 100

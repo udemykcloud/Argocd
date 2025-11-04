@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: guestbook-dev
+  namespace: argocd
+spec:
+  project: guestbook
+  source:
+    repoURL: 'https://github.com/udemykcloud/Argocd.git'
+    targetRevision: main
+    path: section6/guestbook/helm
+    helm:
+      valueFiles:
+        - values-dev.yaml
+  destination:
+    server: https://1440EF309B7D8B599579E7FFC69D84F2.gr7.us-east-1.eks.amazonaws.com
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
