@@ -9,13 +9,13 @@ spec:
     - https://github.com/udemykcloud/Argocd.git
 
   destinations:
-    # ✅ Cluster1 (us-east-1)
+    # ✅ Dev cluster (us-east-1)
     - namespace: '*'
-      server: https://CA28808FF985FFC343B5FD8D46805906.gr7.us-east-1.eks.amazonaws.com
+      server: https://1440EF309B7D8B599579E7FFC69D84F2.gr7.us-east-1.eks.amazonaws.com
 
-    # ✅ Cluster2 (ap-south-1)
+    # ✅ Prod cluster (ap-south-1)
     - namespace: '*'
-      server: https://D2E6AF0030498F0D3E430969326C2440.yl4.ap-south-1.eks.amazonaws.com
+      server: https://A62F1AB01F99B8668087E1A776089FE2.yl4.ap-south-1.eks.amazonaws.com
 
   # Allow creating Namespaces and all namespaced resources
   clusterResourceWhitelist:

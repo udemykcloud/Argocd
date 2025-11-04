@@ -1,0 +1,15 @@
+resources:
+  - ../../base
+
+namePrefix: prod-
+commonLabels:
+  environment: prod
+
+patches:
+  - target:
+      kind: Rollout
+      name: guestbook-ui
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2

@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: moderator
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: moderator
+  template:
+    metadata:
+      labels:
+        app: moderator
+    spec:
+      containers:
+        - name: moderator
+          image: udemykcloud534/moderator:staging-4ad95226f7c1fb4ff1532e01c0aa44f31cc7a2a7
+          ports:
+            - containerPort: 80
+
+  strategy:
+    canary:
+      steps:
+        - setWeight: 50
+        - pause: { duration: 30s }
+        - setWeight: 100

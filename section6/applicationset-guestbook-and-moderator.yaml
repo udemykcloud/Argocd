@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: guestbook-and-moderator
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          # ---- Dev Cluster ----
+          - appName: guestbook
+            environment: dev
+            clusterServer: https://1440EF309B7D8B599579E7FFC69D84F2.gr7.us-east-1.eks.amazonaws.com
+            path: section6/guestbook/base
+
+          - appName: moderator
+            environment: dev
+            clusterServer: https://1440EF309B7D8B599579E7FFC69D84F2.gr7.us-east-1.eks.amazonaws.com
+            path: section6/moderator/base
+
+          # ---- Prod Cluster ----
+          - appName: guestbook
+            environment: prod
+            clusterServer: https://A62F1AB01F99B8668087E1A776089FE2.yl4.ap-south-1.eks.amazonaws.com
+            path: section6/guestbook/base
+
+          - appName: moderator
+            environment: prod
+            clusterServer: https://A62F1AB01F99B8668087E1A776089FE2.yl4.ap-south-1.eks.amazonaws.com
+            path: section6/moderator/base
+
+  template:
+    metadata:
+      name: '{{appName}}-{{environment}}'
+      namespace: argocd
+    spec:
+      project: guestbook
+      source:
+        repoURL: 'https://github.com/udemykcloud/Argocd.git'
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: '{{clusterServer}}'
+        namespace: '{{environment}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

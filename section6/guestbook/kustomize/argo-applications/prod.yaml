@@ -8,10 +8,7 @@ spec:
   source:
     repoURL: 'https://github.com/udemykcloud/Argocd.git'
     targetRevision: main
-    path: section6/guestbook/helm
-    helm:
-      valueFiles:
-        - values-prod.yaml
+    path: section6/guestbook/kustomize/overlays/prod
   destination:
     server: https://A62F1AB01F99B8668087E1A776089FE2.yl4.ap-south-1.eks.amazonaws.com
     namespace: prod
