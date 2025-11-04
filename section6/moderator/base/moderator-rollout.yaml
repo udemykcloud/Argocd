@@ -21,6 +21,8 @@ spec:
 
   strategy:
     canary:
+      stableService: moderator
+      canaryService: moderator-canary
       steps:
         - setWeight: 50
         - pause: { duration: 30s }
