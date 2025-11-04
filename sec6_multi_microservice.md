@@ -551,9 +551,6 @@ Argocd/section6/guestbook/helm
 
 Argocd/section6/guestbook$ tree
 .
-├── base
-│   ├── guestbook-ui-rollout.yaml
-│   └── guestbook-ui-svc.yaml
 └── helm
     ├── Chart.yaml
     ├── argo-applications
@@ -569,6 +566,7 @@ Argocd/section6/guestbook$ tree
 
 Create Argo applications with helm values
 
+argo-applications/dev.yaml
 ```
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -595,6 +593,7 @@ spec:
       - CreateNamespace=true
 ```
 
+argo-applications/prod.yaml
 ```
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -622,7 +621,7 @@ spec:
 ```
 
 Modify the k8s manifest files as helm charts. Its available under templates
-rollout.yaml
+section6/guestbook/helm/templates/rollout.yaml
 ```
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
@@ -654,7 +653,7 @@ spec:
         - setWeight: 100
 ```
 
-service.yaml
+section6/guestbook/helm/templates/service.yaml
 ```
 apiVersion: v1
 kind: Service
@@ -679,6 +678,7 @@ spec:
     app: {{ include "guestbook-ui.name" . }}
 ```
 
+section6/guestbook/helm/
 values-dev.yaml
 ```
 replicaCount: 1
@@ -696,8 +696,15 @@ image:
   repository: udemykcloud534/guestbook
   tag: green
 ```
-
-
+section6/guestbook/helm/Chart.yaml
+```
+apiVersion: v2
+name: guestbook-ui
+description: Helm chart for guestbook-ui rollout using Argo Rollouts
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+```
 
 
 ##  Kustomize:
@@ -785,3 +792,98 @@ spec:
 ```
 
 Argocd/section6/guestbook/kustomize/base
+rollout.yaml
+```
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: guestbook-ui
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: guestbook-ui
+  template:
+    metadata:
+      labels:
+        app: guestbook-ui
+    spec:
+      containers:
+        - name: guestbook-ui
+          image: udemykcloud534/guestbook:green
+          ports:
+            - containerPort: 80
+
+  strategy:
+    canary:
+      stableService: guestbook-ui
+      canaryService: guestbook-ui-canary
+      # Number of pods updated in the first step (percentage or count)
+      steps:
+        - setWeight: 50     # Send 50% of traffic to new version
+        - pause: { duration: 30s } # Wait and observe
+        - setWeight: 100    # Move all traffic to new version
+```
+
+service.yaml
+```
+apiVersion: v1	
+kind: Service	
+metadata:	
+  name: guestbook-ui	
+spec:	
+  ports:	
+  - port: 80	
+    targetPort: 80	
+  selector:	
+    app: guestbook-ui
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: guestbook-ui-canary
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: guestbook-ui
+```
+
+kustomization.yaml
+```
+resources:
+  - rollout.yaml
+  - service.yaml
+```
+
+section6/guestbook/kustomize/overlays/dev/kustomization.yaml
+```
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: Rollout
+      name: guestbook-ui
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 1
+```
+
+section6/guestbook/kustomize/overlays/prod/kustomization.yaml
+```
+resources:
+  - ../../base
+
+patches:
+  - target:
+      kind: Rollout
+      name: guestbook-ui
+    patch: |-
+      - op: replace
+        path: /spec/replicas
+        value: 2
+```
